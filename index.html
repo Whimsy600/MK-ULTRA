@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK-ULTRA</title>
+    <!-- Importing a wide, futuristic, heavy font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f7f7f7;
+            /* Subtle vignette to give a surreal "white wall gallery" depth */
+            background: radial-gradient(circle, #ffffff 60%, #eaeaea 100%);
+            color: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 300vh; /* Creates scroll depth */
+            overflow-x: hidden;
+        }
+
+        /* Fixed container holding the visual elements that morph on scroll */
+        .scroller-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            perspective: 1000px;
+        }
+
+        /* Hero Section (Elk + Title) */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out, filter 0.1s ease-out;
+            will-change: transform, opacity, filter;
+        }
+
+        /* The Wooden Frame */
+        .frame {
+            width: 220px;
+            height: 280px;
+            background: linear-gradient(135deg, #4a2c11, #2b1604); /* Deep wood tone */
+            border: 12px solid #1a0d02; /* Outer frame edge */
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.15), 
+                inset 0 0 20px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        /* Minimalist SVG Elk Silhouette */
+        .elk-head {
+            width: 75%;
+            height: 75%;
+            fill: #ffffff;
+            filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.3));
+        }
+
+        /* Bold, futuristic title */
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            padding-left: 12px; /* Offsets letter-spacing centering issue */
+            color: #000;
+            text-shadow: 0 0 0px rgba(0,0,0,0);
+        }
+
+        /* Party Details Container */
+        .info-container {
+            position: absolute;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            pointer-events: auto;
+        }
+
+        /* Individual lines of party info */
+        .info-line {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            opacity: 0;
+            filter: blur(15px);
+            transform: translateY(40px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #000000;
+        }
+
+        /* Distinguishing the final tagline */
+        .info-line.tagline {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        /* Class added via JS when elements enter their scroll threshold */
+        .info-line.reveal {
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(0) scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main visual canvas -->
+    <div class="scroller-container">
+        
+        <!-- Hero: Visuals that fade/shrink into the background -->
+        <div class="hero" id="hero-assets">
+            <div class="frame">
+                <!-- Clean, geometric Elk/Deer SVG path -->
+                <svg class="elk-head" viewBox="0 0 100 100">
+                    <path d="M50,90 L46,65 L35,55 L25,58 L28,48 L15,45 L20,38 L10,30 L18,30 L15,15 L28,25 L35,12 L42,28 L45,45 L50,52 L55,45 L58,28 L65,12 L72,25 L85,15 L82,30 L90,30 L80,38 L85,45 L72,48 L75,58 L65,55 L54,65 Z"/>
+                    <path d="M46,65 L50,72 L54,65 L50,62 Z" fill="#eaeaea"/>
+                </svg>
+            </div>
+            <h1 id="main-title">MK-ULTRA</h1>
+        </div>
+
+        <!-- Scroll-revealed Information -->
+        <div class="info-container">
+            <div class="info-line" data-scroll="300">BYO</div>
+            <div class="info-line" data-scroll="600">MK-ULTRA opening night</div>
+            <div class="info-line" data-scroll="900">July 4th</div>
+            <div class="info-line" data-scroll="1200">506 S Green Street</div>
+            <div class="info-line tagline" data-scroll="1500">The Night Is Still Young...</div>
+        </div>
+
+    </div>
+
+    <script>
+        const hero = document.getElementById('hero-assets');
+        const infoLines = document.querySelectorAll('.info-line');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+
+            // 1. Surreal Hero Morph
+            // As you scroll, the Elk and Title shrink, blur, and melt away
+            if (scrollTop <= 1000) {
+                const scale = 1 - (scrollTop * 0.0006);
+                const opacity = 1 - (scrollTop * 0.0015);
+                const blur = scrollTop * 0.015;
+                const zTranslation = -scrollTop * 0.5;
+
+                hero.style.transform = `translateZ(${zTranslation}px) scale(${scale})`;
+                hero.style.opacity = opacity;
+                hero.style.filter = `blur(${blur}px)`;
+            } else {
+                hero.style.opacity = 0;
+            }
+
+            // 2. Controlled Sequential Reveal for Party Info
+            // Triggers each line precisely as you hit specific scroll milestones
+            infoLines.forEach(line => {
+                const triggerPoint = parseInt(line.getAttribute('data-scroll'));
+                
+                // If we've scrolled past this line's threshold, make it pop in
+                if (scrollTop > triggerPoint) {
+                    line.classList.add('reveal');
+                } else {
+                    line.classList.remove('reveal');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
