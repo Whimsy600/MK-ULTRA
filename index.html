@@ -9,22 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        * {
+        /* Force the browser layout engine to respect scrolling constraints */
+        html, body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto !important;
+            background-color: #f5f5f5;
         }
 
         body {
-            background-color: #f5f5f5;
             background: radial-gradient(circle, #ffffff 40%, #e2e2e2 100%);
             color: #000000;
             font-family: 'Space Grotesk', sans-serif;
-            min-height: 600vh; /* Smooth, continuous scrolling track */
-            overflow-x: hidden;
+            /* Using rigid pixels instead of vh to guarantee a massive scroll track on all engines */
+            min-height: 5200px; 
         }
 
-        /* Fixed viewport container holding our morphing elements */
+        /* Fixed viewport canvas wrapper */
         .scroller-container {
             position: fixed;
             top: 0;
@@ -37,6 +40,7 @@
             align-items: center;
             pointer-events: none;
             perspective: 1500px;
+            z-index: 10;
         }
 
         /* --- STAGE 1: SQUIGGLY FLANK BUILDINGS --- */
@@ -57,7 +61,7 @@
             width: 32vw;
             height: 85vh;
             will-change: transform, opacity;
-            filter: url(#distort-squiggle); /* Generates the unstable raw squiggle look */
+            filter: url(#distort-squiggle); /* Continuous calculation of unstable sketch lines */
         }
 
         #left-flank {
@@ -76,12 +80,12 @@
             stroke-width: 2;
         }
 
-        /* --- STAGE 2: INITIAL GALLERY HERO WALL --- */
+        /* --- STAGE 2: INITIAL PHOTO CANVAS --- */
         .hero {
             display: flex;
             flex-direction: column;
             align-items: center;
-            transform-origin: 48.5% 42.5%; /* Coordinates locked right to the center of the elk's pupil */
+            transform-origin: 48.5% 42.5%; /* Aimed dead center at the target elk pupil coordinate */
             z-index: 2;
             will-change: transform, opacity;
         }
@@ -144,7 +148,7 @@
             max-height: 1500px;
         }
 
-        /* --- STAGE 4: SUBTLE RETRO NEON SIGN EYE REFLECTION --- */
+        /* --- STAGE 4: SUBTLE RETRO NEON EYE REFLECTION --- */
         .neon-reflection-wrapper {
             position: absolute;
             width: 100%;
@@ -155,7 +159,7 @@
             z-index: 4;
             opacity: 0;
             pointer-events: none;
-            mix-blend-mode: screen; /* Seamlessly projects neon light rays across eyeball tissue */
+            mix-blend-mode: screen; /* Fuses neon photons straight into iris paths */
             will-change: opacity, transform;
         }
 
@@ -165,7 +169,7 @@
             font-weight: 700;
             letter-spacing: 18px;
             text-align: center;
-            /* Crimson neon gas core bounded by a high-voltage plasma blue aura */
+            /* Crimson neon core containing deep sapphire gas perimeters */
             color: rgba(255, 35, 35, 0.9);
             text-shadow: 
                 0 0 4px rgba(255, 20, 20, 0.9),
@@ -175,7 +179,7 @@
             transform: scale(0.85) perspective(600px) rotateX(12deg);
         }
 
-        /* The targeted glitching character "K" */
+        /* Isolated loop running code exclusively for character "K" */
         .glitch-k {
             display: inline-block;
             animation: voltageDrop 2.8s infinite linear;
@@ -232,11 +236,11 @@
         .glass-left { left: 90px; transform: rotate(-14deg); }
         .glass-right { right: 90px; transform: rotate(14deg); }
 
-        /* Snaps stems inward on target contact */
+        /* Collision assignments */
         .martini-stage.clinked .glass-left { transform: translateX(55px) rotate(22deg); }
         .martini-stage.clinked .glass-right { transform: translateX(-55px) rotate(-22deg); }
 
-        /* Dynamic Emerald Splash Physics Fluid paths */
+        /* Liquid Splatter Physics Elements */
         .emerald-splatter {
             position: absolute;
             top: 25px;
@@ -259,7 +263,7 @@
             100% { opacity: 0; transform: scale(1.3) translateY(-40px); filter: blur(2px); }
         }
 
-        /* --- DATA TEXT LAYERS --- */
+        /* --- STREAMING DATA TEXT LAYERS --- */
         .info-container {
             position: absolute;
             width: 100%;
@@ -407,103 +411,93 @@
     </div>
 
     <script>
-        const leftFlank = document.getElementById('left-flank');
-        const rightFlank = document.getElementById('right-flank');
-        const hero = document.getElementById('hero-assets');
-        const mainTitle = document.getElementById('main-title');
-        const eyeLayer = document.getElementById('eye-layer');
-        const neonLayer = document.getElementById('neon-layer');
-        const textCanvas = document.getElementById('text-canvas');
-        const clinkZone = document.getElementById('clink-zone');
-        const stage = document.getElementById('stage');
-        const finalTag = document.getElementById('final-tag');
-        const infoLines = document.querySelectorAll('.info-line:not(.tagline)');
-        const pupil = document.getElementById('pupil');
+        // DOM Safety Vault: Ensures script strictly executes AFTER elements exist in browser memory
+        document.addEventListener("DOMContentLoaded", () => {
+            const leftFlank = document.getElementById('left-flank');
+            const rightFlank = document.getElementById('right-flank');
+            const hero = document.getElementById('hero-assets');
+            const mainTitle = document.getElementById('main-title');
+            const eyeLayer = document.getElementById('eye-layer');
+            const neonLayer = document.getElementById('neon-layer');
+            const textCanvas = document.getElementById('text-canvas');
+            const clinkZone = document.getElementById('clink-zone');
+            const stage = document.getElementById('stage');
+            const finalTag = document.getElementById('final-tag');
+            const infoLines = document.querySelectorAll('.info-line:not(.tagline)');
+            const pupil = document.getElementById('pupil');
 
-        let lastKnownScrollPosition = 0;
-        let ticking = false;
+            let lastKnownScrollPosition = 0;
+            let ticking = false;
 
-        // Decouple calculations from direct execution to prevent scroll locking
-        window.addEventListener('scroll', () => {
-            lastKnownScrollPosition = window.scrollY || document.documentElement.scrollTop;
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    renderTimeline(lastKnownScrollPosition);
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        });
-
-        function renderTimeline(scrollTop) {
-            // TRACK 1: Sideways Squiggle Erection (Scroll 0 - 1400)
-            if (scrollTop <= 1400) {
-                const f = Math.min(scrollTop / 1000, 1);
-                leftFlank.style.transform = `translateX(${-100 + (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
-                rightFlank.style.transform = `translateX(${100 - (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
+            window.addEventListener('scroll', () => {
+                lastKnownScrollPosition = window.pageYOffset || document.documentElement.scrollTop || window.scrollY;
                 
-                if (scrollTop > 800) {
-                    const fade = 1 - ((scrollTop - 800) / 600);
-                    leftFlank.style.opacity = Math.max(fade, 0);
-                    rightFlank.style.opacity = Math.max(fade, 0);
-                } else {
-                    leftFlank.style.opacity = 1;
-                    rightFlank.style.opacity = 1;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        renderTimeline(lastKnownScrollPosition);
+                        ticking = false;
+                    });
+                    ticking = true;
                 }
-            }
+            });
 
-            // TRACK 2: Linearized Smooth Camera Lens Zoom (No Infinite Breakers)
-            if (scrollTop <= 2400) {
-                // Smooth linear-quadratic blending prevents value explosion
-                const zoomScale = 1 + (scrollTop * 0.0035) + (scrollTop * scrollTop * 0.000015);
-                const viewOpacity = scrollTop > 1600 ? 1 - ((scrollTop - 1600) / 600) : 1;
-                
-                hero.style.transform = `scale(${zoomScale})`;
-                hero.style.opacity = Math.max(viewOpacity, 0);
-                mainTitle.style.opacity = 1 - (scrollTop * 0.0015);
-            }
+            function renderTimeline(scrollTop) {
+                // Defensive Catch: Exit loop gracefully if a node fails to unpack
+                if (!hero || !eyeLayer || !leftFlank || !rightFlank) return;
 
-            // TRACK 3: Seamless Crossfade Microscopic Pupil Core
-            if (scrollTop >= 1000 && scrollTop <= 4500) {
-                const handoffTrack = (scrollTop - 1000) / 800;
-                const eyeOpacity = Math.min(Math.max(handoffTrack, 0), 1);
-                const eyeScale = 0.1 + ((scrollTop - 1000) * 0.00045);
-
-                eyeLayer.style.opacity = eyeOpacity;
-                eyeLayer.style.transform = `scale(${eyeScale})`;
-
-                // Steady dilation tracking
-                const currentPupilWidth = 220 + ((scrollTop - 1000) * 0.02);
-                pupil.setAttribute('width', Math.min(currentPupilWidth, 310));
-
-                if (scrollTop > 3400) {
-                    const layerFade = 1 - ((scrollTop - 3400) / 700);
-                    eyeLayer.style.opacity = Math.max(layerFade, 0);
-                    textCanvas.style.opacity = layerFade;
-                } else {
-                    textCanvas.style.opacity = 1;
+                // TRACK 1: Horizontal Squiggle Building Erection (Scroll 0 - 1300)
+                if (scrollTop <= 1300) {
+                    const f = Math.min(scrollTop / 900, 1);
+                    leftFlank.style.transform = `translateX(${-100 + (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
+                    rightFlank.style.transform = `translateX(${100 - (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
+                    
+                    if (scrollTop > 700) {
+                        const fade = 1 - ((scrollTop - 700) / 500);
+                        leftFlank.style.opacity = Math.max(fade, 0);
+                        rightFlank.style.opacity = Math.max(fade, 0);
+                    } else {
+                        leftFlank.style.opacity = 1;
+                        rightFlank.style.opacity = 1;
+                    }
                 }
-            } else if (scrollTop < 1000) {
-                eyeLayer.style.opacity = 0;
-            }
 
-            // TRACK 4: Ambient Subtle Retro Sign Reflection Overlay
-            if (scrollTop >= 1400 && scrollTop <= 4200) {
-                const neonOpacity = (scrollTop - 1400) / 600;
-                // Hardcap reflectivity at 0.5 to keep it a clean embedded tissue reflection
-                neonLayer.style.opacity = Math.min(Math.max(neonOpacity, 0), 0.5); 
-                
-                const neonScale = 0.75 + ((scrollTop - 1400) * 0.00015);
-                neonLayer.style.transform = `scale(${neonScale})`;
-
-                if (scrollTop > 3300) {
-                    neonLayer.style.opacity = 0.5 - ((scrollTop - 3300) / 700);
+                // TRACK 2: Linear Smooth Camera Zoom (Scroll 0 - 2200)
+                if (scrollTop <= 2200) {
+                    const zoomScale = 1 + (scrollTop * 0.0035) + (scrollTop * scrollTop * 0.000015);
+                    const viewOpacity = scrollTop > 1500 ? 1 - ((scrollTop - 1500) / 600) : 1;
+                    
+                    hero.style.transform = `scale(${zoomScale})`;
+                    hero.style.opacity = Math.max(viewOpacity, 0);
+                    if (mainTitle) mainTitle.style.opacity = 1 - (scrollTop * 0.0015);
                 }
-            } else {
-                neonLayer.style.opacity = 0;
-            }
 
-            // TRACK 5: Sequential Info Text Deployment
-            infoLines.forEach(line => {
-                const targetPoint = parseInt(line.getAttribute('data-reveal'));
-                if (scrollTop > ta
+                // TRACK 3: Seamless Crossfade Microscopic Pupil Core (Scroll 900 - 4200)
+                if (scrollTop >= 900 && scrollTop <= 4200) {
+                    const handoffTrack = (scrollTop - 900) / 700;
+                    const eyeOpacity = Math.min(Math.max(handoffTrack, 0), 1);
+                    const eyeScale = 0.1 + ((scrollTop - 900) * 0.00045);
+
+                    eyeLayer.style.opacity = eyeOpacity;
+                    eyeLayer.style.transform = `scale(${eyeScale})`;
+
+                    if (pupil) {
+                        const currentPupilWidth = 220 + ((scrollTop - 900) * 0.02);
+                        pupil.setAttribute('width', Math.min(currentPupilWidth, 310));
+                    }
+
+                    if (scrollTop > 3100) {
+                        const layerFade = 1 - ((scrollTop - 3100) / 700);
+                        eyeLayer.style.opacity = Math.max(layerFade, 0);
+                        if (textCanvas) textCanvas.style.opacity = layerFade;
+                    } else {
+                        if (textCanvas) textCanvas.style.opacity = 1;
+                    }
+                } else if (scrollTop < 900) {
+                    eyeLayer.style.opacity = 0;
+                }
+
+                // TRACK 4: Ambient Subtle Retro Sign Reflection Overlay
+                if (scrollTop >= 1300 && scrollTop <= 4000) {
+                    const neonOpacity = (scrollTop - 1300) / 600;
+                    if (neonLayer) {
+    
