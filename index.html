@@ -3,137 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MK-ULTRA | The Elk</title>
+    <title>MK-ULTRA | The Eye</title>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. FORCE THE SCROLL TRACK */
+        /* 1. THE CANVAS & SCROLL TRACK */
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
-            /* This guarantees a massive scrollable area regardless of browser */
-            height: 1000vh; 
+            background-color: #ffffff; /* Pure white wall */
+            height: 1000vh; /* Forced heavy scroll track */
             overflow-x: hidden;
             font-family: 'Courier New', Courier, monospace;
         }
 
-        /* 2. THE FIXED CAMERA CANVAS */
-        #camera-lens {
+        #lens {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #ffffff;
-            perspective: 1000px;
+            perspective: 800px;
         }
 
-        /* --- SCENE 1: THE ELK & FRAME --- */
-        #wood-frame {
+        /* 2. THE FRAME & ELK */
+        #frame-wrapper {
             position: absolute;
-            width: 300px;
-            height: 400px;
-            border: 20px solid #3e2723; /* Dark wood frame */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 32vw;
+            max-width: 380px;
+            aspect-ratio: 3 / 4;
+            background: #111;
+            border: 12px solid #1a100c;
+            box-shadow: 
+                inset 0 0 20px rgba(0,0,0,0.8),
+                0 30px 60px rgba(0,0,0,0.2);
+            z-index: 2;
+            transform-origin: center 42%; /* Focuses zoom precisely on the eye area */
+            will-change: transform, opacity;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            background: #000;
-            transform-origin: center center;
-            will-change: transform, opacity;
-            z-index: 2;
         }
 
-        /* Using a placeholder for your hyper-realistic elk. Swap the src for yours. */
-        #elk-image {
+        /* Using a highly reliable, permanent Unsplash source for the Elk */
+        #elk-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform-origin: 50% 40%; /* Anchors the zoom directly on the eye */
+            object-position: center 30%;
+            filter: contrast(1.1) brightness(0.9) grayscale(0.2);
         }
 
-        /* --- SCENE 2: SQUIGGLY BUILDINGS --- */
-        .building-container {
+        /* 3. THE ARCHITECTURAL SQUIGGLES */
+        .sketch-zone {
             position: absolute;
+            width: 45vw;
+            height: 70vh;
             bottom: 0;
-            width: 40vw;
-            height: 60vh;
             z-index: 3;
-            will-change: transform, opacity;
             opacity: 0;
+            will-change: transform, opacity;
         }
 
-        #buildings-left { left: 0; transform: translateX(-100%); }
-        #buildings-right { right: 0; transform: translateX(100%); }
+        #sketch-left { left: 0; transform: translateX(-100%); }
+        #sketch-right { right: 0; transform: translateX(100%); }
 
-        .squiggly-line {
+        .arch-line {
             fill: none;
-            stroke: #000000;
-            stroke-width: 3;
-            filter: url(#squiggle-filter);
+            stroke: #111;
+            stroke-width: 1.5;
+            filter: url(#rough-paper);
         }
 
-        /* --- SCENE 3: MACRO BROWN EYE --- */
-        #macro-eye {
+        /* 4. THE HYPER-REALISTIC MACRO EYE */
+        #macro-eye-scene {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle at center, #0a0502 5%, #3e1f0b 25%, #5c3012 40%, #1a0b04 80%, #000000 100%);
+            background: #000;
             opacity: 0;
             z-index: 4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
             will-change: opacity;
+        }
+
+        .eye-globe {
+            width: 150vw;
+            height: 150vw;
+            max-width: 1200px;
+            max-height: 1200px;
+            position: relative;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #050201 10%, #301608 20%, #633212 35%, #8f4c1e 45%, #210d04 70%, #000000 85%);
+            box-shadow: inset 0 0 150px #000;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* --- SCENE 4: NEON GLOBE REFLECTION --- */
-        #neon-reflection {
+        /* The glossy wet highlight of the cornea */
+        .cornea-gloss {
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            width: 60%;
+            height: 40%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(-15deg);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* 5. CURVED NEON REFLECTION */
+        #neon-wrap {
             position: absolute;
             z-index: 5;
+            width: 100vw;
+            height: 100vh;
             opacity: 0;
-            transform: rotateX(25deg) scale(0.8);
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             mix-blend-mode: screen;
-            will-change: transform, opacity;
+            pointer-events: none;
+            will-change: opacity, transform;
+            transform: scale(0.9);
         }
 
-        .neon-text {
+        .neon-svg-text {
             font-family: 'Syncopate', sans-serif;
-            font-size: 6rem;
-            color: rgba(255, 50, 50, 0.9);
-            text-shadow: 
-                0 0 10px rgba(255, 0, 0, 0.8),
-                0 0 20px rgba(255, 0, 0, 0.6),
-                0 0 40px rgba(0, 100, 255, 0.6),
-                0 0 80px rgba(0, 100, 255, 0.4);
+            font-size: 58px;
+            font-weight: 700;
+            fill: #ff2a2a;
+            letter-spacing: 4px;
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 25px rgba(0, 150, 255, 0.6));
         }
 
-        .glitch-k {
-            display: inline-block;
-            animation: retroGlitch 3s infinite;
-        }
-
-        @keyframes retroGlitch {
-            0%, 90%, 96%, 100% { opacity: 1; color: rgba(255, 50, 50, 0.9); text-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
-            92%, 98% { opacity: 0.3; color: #fff; text-shadow: 0 0 5px #00f; }
-            94% { opacity: 0.8; transform: translateX(-3px); }
-        }
-
-        /* --- SCENE 5: ART DECO MARTINIS & SPLASH --- */
-        #martini-stage {
+        /* 6. AKIRA-STYLE CYBERPUNK MARTINIS */
+        #akira-martini-stage {
             position: absolute;
-            bottom: 15vh;
-            width: 400px;
-            height: 250px;
+            bottom: 10vh;
+            width: 500px;
+            height: 300px;
             z-index: 6;
             opacity: 0;
             display: flex;
@@ -142,153 +165,187 @@
             will-change: opacity;
         }
 
-        .glass {
-            width: 120px;
-            height: 180px;
+        .akira-glass {
+            width: 140px;
+            height: 220px;
             position: absolute;
             will-change: transform;
         }
 
-        /* Art Deco styling for the glasses */
-        .glass-path {
-            fill: rgba(10, 10, 10, 0.9);
-            stroke: #d4af37; /* Gold rim */
+        /* Sharp silhouette shading */
+        .glass-base {
+            fill: #0a0a0a;
+            stroke: #333;
             stroke-width: 2;
         }
-        .liquid-path { fill: #00ff44; opacity: 0.8; }
+        
+        .glass-highlight {
+            fill: rgba(255,255,255,0.1);
+        }
 
-        #glass-left { left: 50px; transform: rotate(-15deg); }
-        #glass-right { right: 50px; transform: rotate(15deg); }
+        /* Luminous, toxic neon green */
+        .liquid-core {
+            fill: #00ff55;
+            filter: drop-shadow(0 0 15px #00ff55) drop-shadow(0 0 30px #00a136);
+        }
 
-        #splash-fx {
+        #aglass-left { left: 80px; transform: rotate(-20deg); }
+        #aglass-right { right: 80px; transform: rotate(20deg); }
+
+        /* Sharp vector splash */
+        #akira-splash {
             position: absolute;
-            top: 20px;
-            width: 150px;
-            height: 150px;
+            top: 10px;
+            width: 200px;
+            height: 200px;
             opacity: 0;
-            fill: #00ff44;
-            filter: drop-shadow(0 0 10px #00ff44);
             will-change: transform, opacity;
         }
+
+        .splash-shard {
+            fill: #00ff55;
+            filter: drop-shadow(0 0 10px #00ff55);
+        }
+
+        /* Cinematic light dimming when the neon/martinis appear */
+        #cinematic-vignette {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+            opacity: 0;
+            z-index: 7;
+            pointer-events: none;
+            will-change: opacity;
+        }
+
     </style>
 </head>
 <body>
 
     <svg style="width:0; height:0; position:absolute;">
-        <filter id="squiggle-filter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+        <filter id="rough-paper">
+            <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
 
-    <div id="camera-lens">
+    <div id="lens">
         
-        <div id="wood-frame">
-            <img id="elk-image" src="https://images.unsplash.com/photo-1605335961623-a607997992cb?q=80&w=600&auto=format&fit=crop" alt="Hyper Realistic Elk">
+        <div id="frame-wrapper">
+            <img id="elk-img" src="https://images.unsplash.com/photo-1482822619438-e6d63e9f0294?auto=format&fit=crop&w=800&q=80" alt="Elk Reference">
         </div>
 
-        <div class="building-container" id="buildings-left">
+        <div class="sketch-zone" id="sketch-left">
             <svg viewBox="0 0 200 300" width="100%" height="100%">
-                <path class="squiggly-line" d="M20,300 L20,150 L60,150 L60,300 M60,300 L60,50 L120,50 L120,300 M120,300 L120,200 L180,200 L180,300" />
+                <path class="arch-line" d="M10,300 L10,120 L40,120 L40,300 M40,300 L40,60 L90,60 L90,300 M90,300 L90,180 L160,180 L160,300 M30,100 L70,100 M60,220 L120,220" />
             </svg>
         </div>
-        <div class="building-container" id="buildings-right">
+        <div class="sketch-zone" id="sketch-right">
             <svg viewBox="0 0 200 300" width="100%" height="100%">
-                <path class="squiggly-line" d="M180,300 L180,120 L140,120 L140,300 M140,300 L140,80 L80,80 L80,300 M80,300 L80,180 L20,180 L20,300" />
+                <path class="arch-line" d="M190,300 L190,140 L150,140 L150,300 M150,300 L150,40 L100,40 L100,300 M100,300 L100,200 L40,200 L40,300 M160,110 L120,110 M140,240 L80,240" />
             </svg>
         </div>
 
-        <div id="macro-eye"></div>
-
-        <div id="neon-reflection">
-            <h1 class="neon-text">M<span class="glitch-k">K</span>-ULTRA</h1>
+        <div id="macro-eye-scene">
+            <div class="eye-globe">
+                <div style="width: 25%; height: 25%; background: #000; border-radius: 50%; box-shadow: 0 0 40px rgba(0,0,0,0.9);"></div>
+                <div class="cornea-gloss"></div>
+            </div>
         </div>
 
-        <div id="martini-stage">
-            <svg id="splash-fx" viewBox="0 0 100 100">
-                <circle cx="30" cy="30" r="4" />
-                <circle cx="70" cy="25" r="5" />
-                <circle cx="50" cy="15" r="3" />
-                <path d="M40,50 Q50,20 60,50 Z" />
-            </svg>
-
-            <svg id="glass-left" class="glass" viewBox="0 0 100 150">
-                <path class="glass-path" d="M10,20 L90,20 L55,70 L55,140 L70,140 L70,145 L30,145 L30,140 L45,140 L45,70 Z" />
-                <path class="liquid-path" d="M25,35 L75,35 L50,70 Z" />
-            </svg>
-
-            <svg id="glass-right" class="glass" viewBox="0 0 100 150">
-                <path class="glass-path" d="M10,20 L90,20 L55,70 L55,140 L70,140 L70,145 L30,145 L30,140 L45,140 L45,70 Z" />
-                <path class="liquid-path" d="M25,35 L75,35 L50,70 Z" />
+        <div id="neon-wrap">
+            <svg viewBox="0 0 600 300" width="100vw" height="50vh" style="max-width: 1000px;">
+                <path id="curve-path" d="M 50,200 Q 300,50 550,200" fill="transparent" />
+                <text class="neon-svg-text">
+                    <textPath href="#curve-path" startOffset="50%" text-anchor="middle">
+                        M<tspan style="fill:#fff; text-shadow: 0 0 10px #00f;">K</tspan>-ULTRA
+                    </textPath>
+                </text>
             </svg>
         </div>
+
+        <div id="akira-martini-stage">
+            
+            <svg id="akira-splash" viewBox="0 0 200 200">
+                <polygon class="splash-shard" points="100,100 110,60 115,100" />
+                <polygon class="splash-shard" points="100,100 80,40 90,100" />
+                <polygon class="splash-shard" points="100,100 140,70 120,110" />
+                <polygon class="splash-shard" points="100,100 60,80 85,120" />
+                <circle cx="110" cy="30" r="3" fill="#00ff55" />
+                <circle cx="70" cy="20" r="4" fill="#00ff55" />
+                <circle cx="150" cy="50" r="2.5" fill="#00ff55" />
+            </svg>
+
+            <svg id="aglass-left" class="akira-glass" viewBox="0 0 140 220">
+                <path class="glass-base" d="M20,20 L120,20 L75,110 L75,200 L95,200 L95,210 L45,210 L45,200 L65,200 L65,110 Z" />
+                <path class="glass-highlight" d="M25,25 L65,105 L55,105 L20,35 Z" />
+                <path class="liquid-core" d="M35,50 L105,50 L70,110 Z" />
+            </svg>
+
+            <svg id="aglass-right" class="akira-glass" viewBox="0 0 140 220">
+                <path class="glass-base" d="M20,20 L120,20 L75,110 L75,200 L95,200 L95,210 L45,210 L45,200 L65,200 L65,110 Z" />
+                <path class="glass-highlight" d="M115,25 L75,105 L85,105 L120,35 Z" />
+                <path class="liquid-core" d="M35,50 L105,50 L70,110 Z" />
+            </svg>
+        </div>
+
+        <div id="cinematic-vignette"></div>
 
     </div>
 
     <script>
-        // DOM Elements
-        const frame = document.getElementById('wood-frame');
-        const elkImg = document.getElementById('elk-image');
-        const bldLeft = document.getElementById('buildings-left');
-        const bldRight = document.getElementById('buildings-right');
-        const macroEye = document.getElementById('macro-eye');
-        const neon = document.getElementById('neon-reflection');
-        const martiniStage = document.getElementById('martini-stage');
-        const glassLeft = document.getElementById('glass-left');
-        const glassRight = document.getElementById('glass-right');
-        const splash = document.getElementById('splash-fx');
+        const frame = document.getElementById('frame-wrapper');
+        const sketchLeft = document.getElementById('sketch-left');
+        const sketchRight = document.getElementById('sketch-right');
+        const macroEye = document.getElementById('macro-eye-scene');
+        const neon = document.getElementById('neon-wrap');
+        const martiniStage = document.getElementById('akira-martini-stage');
+        const glassLeft = document.getElementById('aglass-left');
+        const glassRight = document.getElementById('aglass-right');
+        const splash = document.getElementById('akira-splash');
+        const vignette = document.getElementById('cinematic-vignette');
 
-        // Render loop variables
         let scrollY = 0;
         let ticking = false;
 
-        // Core scroll listener
         window.addEventListener('scroll', () => {
             scrollY = window.scrollY;
             if (!ticking) {
                 window.requestAnimationFrame(() => {
-                    updateScene(scrollY);
+                    renderFrame(scrollY);
                     ticking = false;
                 });
                 ticking = true;
             }
         });
 
-        // The Master Timeline Logic
-        function updateScene(y) {
-            // Calculate total scroll progress as a percentage from 0.0 to 1.0
+        function renderFrame(y) {
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             const p = Math.min(y / maxScroll, 1);
 
-            // --- 1. ZOOMING THE ELK & FRAME (Progress: 0.0 -> 0.4) ---
-            // Scale goes from 1x to 35x to push inside the eye
-            let frameScale = 1;
+            // 1. ZOOMING THE ELK & FRAME (0.0 -> 0.4)
             if (p < 0.4) {
-                frameScale = 1 + (Math.pow(p / 0.4, 3) * 35); 
+                // Starts normal, accelerates into a massive zoom
+                let scaleCurve = Math.pow(p / 0.4, 4);
+                frame.style.transform = `scale(${1 + (scaleCurve * 45)})`;
                 frame.style.opacity = 1;
             } else {
-                frameScale = 36;
-                frame.style.opacity = 0; // Hide it once we are inside
+                frame.style.opacity = 0; // Completely inside the eye now
             }
-            frame.style.transform = `scale(${frameScale})`;
 
-            // --- 2. SQUIGGLY BUILDINGS DRAW IN (Progress: 0.1 -> 0.3) ---
+            // 2. ARCHITECTURAL SQUIGGLES (0.05 -> 0.35)
             if (p > 0.05 && p < 0.4) {
                 let buildP = Math.min(Math.max((p - 0.05) / 0.25, 0), 1);
-                bldLeft.style.opacity = buildP;
-                bldRight.style.opacity = buildP;
-                // Move from off-screen to center
-                bldLeft.style.transform = `translateX(${-100 + (buildP * 100)}%)`;
-                bldRight.style.transform = `translateX(${100 - (buildP * 100)}%)`;
-            } else if (p >= 0.4) {
-                bldLeft.style.opacity = 0;
-                bldRight.style.opacity = 0;
+                sketchLeft.style.opacity = buildP;
+                sketchRight.style.opacity = buildP;
+                sketchLeft.style.transform = `translateX(${-100 + (buildP * 100)}%)`;
+                sketchRight.style.transform = `translateX(${100 - (buildP * 100)}%)`;
             } else {
-                bldLeft.style.opacity = 0;
-                bldRight.style.opacity = 0;
+                sketchLeft.style.opacity = 0;
+                sketchRight.style.opacity = 0;
             }
 
-            // --- 3. MACRO BROWN EYE FADE IN (Progress: 0.35 -> 0.5) ---
+            // 3. HYPER-REALISTIC MACRO EYE FADE (0.35 -> 0.5)
             if (p >= 0.35) {
                 let eyeP = Math.min((p - 0.35) / 0.15, 1);
                 macroEye.style.opacity = eyeP;
@@ -296,48 +353,45 @@
                 macroEye.style.opacity = 0;
             }
 
-            // --- 4. NEON REFLECTION (Progress: 0.5 -> 0.8) ---
+            // 4. NEON WRAP REFLECTION (0.5 -> 0.8)
             if (p >= 0.5) {
                 let neonP = Math.min((p - 0.5) / 0.15, 1);
-                // Keep neon visible for the rest of the scroll
-                neon.style.opacity = neonP; 
-                // Slight 3D curve adjustment as we settle
-                neon.style.transform = `rotateX(${25 - (neonP * 15)}deg) scale(${0.8 + (neonP * 0.2)})`;
+                neon.style.opacity = neonP;
+                // Simulates the reflection shifting as we zoom deeper
+                neon.style.transform = `scale(${0.9 + (neonP * 0.1)}) translateY(${20 - (neonP * 20)}px)`;
             } else {
                 neon.style.opacity = 0;
             }
 
-            // --- 5. ART DECO MARTINIS & SPLASH (Progress: 0.75 -> 1.0) ---
+            // 5. AKIRA MARTINIS & SPLASH (0.75 -> 1.0)
             if (p >= 0.75) {
                 let stageP = Math.min((p - 0.75) / 0.1, 1);
                 martiniStage.style.opacity = stageP;
+                vignette.style.opacity = stageP; // Darkens the edges so the neon pops
 
-                // Clink mechanics: Glasses slide towards center
+                // Clink physics
                 let clinkP = Math.min(Math.max((p - 0.85) / 0.1, 0), 1);
                 
-                // Left glass moves right and straightens
-                glassLeft.style.transform = `translateX(${clinkP * 40}px) rotate(${-15 + (clinkP * 15)}deg)`;
-                // Right glass moves left and straightens
-                glassRight.style.transform = `translateX(${-clinkP * 40}px) rotate(${15 - (clinkP * 15)}deg)`;
+                glassLeft.style.transform = `translateX(${clinkP * 65}px) rotate(${-20 + (clinkP * 20)}deg)`;
+                glassRight.style.transform = `translateX(${-clinkP * 65}px) rotate(${20 - (clinkP * 20)}deg)`;
 
-                // Splash mechanics: Explodes up right as they touch
+                // Explosive splash physics
                 if (clinkP > 0.9) {
                     let splashP = (clinkP - 0.9) / 0.1;
-                    splash.style.opacity = Math.max(1 - splashP, 0); // Fades out slightly at end
-                    splash.style.transform = `scale(${splashP * 1.5}) translateY(${-splashP * 30}px)`;
+                    splash.style.opacity = Math.max(1 - splashP, 0); 
+                    splash.style.transform = `scale(${0.5 + splashP}) translateY(${-splashP * 60}px)`;
                 } else {
                     splash.style.opacity = 0;
-                    splash.style.transform = `scale(0.5) translateY(0)`;
+                    splash.style.transform = `scale(0.2) translateY(0)`;
                 }
-
             } else {
                 martiniStage.style.opacity = 0;
                 splash.style.opacity = 0;
+                vignette.style.opacity = 0;
             }
         }
         
-        // Initial render
-        updateScene(window.scrollY);
+        renderFrame(window.scrollY);
     </script>
 </body>
 </html>
