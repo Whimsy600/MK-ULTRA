@@ -1,397 +1,433 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="mk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MK-ULTRA | The Eye</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* 1. THE CANVAS & SCROLL TRACK */
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff; /* Pure white wall */
-            height: 1000vh; /* Forced heavy scroll track */
-            overflow-x: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0a0a0a" />
+<title>MK-ULTRA</title>
+<meta name="description" content="MK-ULTRA — July 4th, 506 S Green Street. BYO. The Night is Still Young…" />
 
-        #lens {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 800px;
-        }
+<!-- Fonts: Anton (bold display / titles) + Monoton (retro neon sign) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Monoton&display=swap" rel="stylesheet" />
 
-        /* 2. THE FRAME & ELK */
-        #frame-wrapper {
-            position: absolute;
-            width: 32vw;
-            max-width: 380px;
-            aspect-ratio: 3 / 4;
-            background: #111;
-            border: 12px solid #1a100c;
-            box-shadow: 
-                inset 0 0 20px rgba(0,0,0,0.8),
-                0 30px 60px rgba(0,0,0,0.2);
-            z-index: 2;
-            transform-origin: center 42%; /* Focuses zoom precisely on the eye area */
-            will-change: transform, opacity;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+<style>
+  :root{
+    --ink:#0b0b0b;
+    --bone:#efece4;
+    --neon:#2fd2ff;
+    --neon-deep:#0aa6d6;
+    --spark:#bff4ff;
+  }
 
-        /* Using a highly reliable, permanent Unsplash source for the Elk */
-        #elk-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center 30%;
-            filter: contrast(1.1) brightness(0.9) grayscale(0.2);
-        }
+  *{ box-sizing:border-box; margin:0; padding:0; }
 
-        /* 3. THE ARCHITECTURAL SQUIGGLES */
-        .sketch-zone {
-            position: absolute;
-            width: 45vw;
-            height: 70vh;
-            bottom: 0;
-            z-index: 3;
-            opacity: 0;
-            will-change: transform, opacity;
-        }
+  html.mk{ background:#0a0a0a; }
 
-        #sketch-left { left: 0; transform: translateX(-100%); }
-        #sketch-right { right: 0; transform: translateX(100%); }
+  body{
+    background:#0a0a0a;
+    color:var(--bone);
+    font-family:"Anton", Impact, "Arial Narrow Bold", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
 
-        .arch-line {
-            fill: none;
-            stroke: #111;
-            stroke-width: 1.5;
-            filter: url(#rough-paper);
-        }
+  /* The tall scroll track that drives the whole animation */
+  .scroll-track{ height:640vh; position:relative; }
 
-        /* 4. THE HYPER-REALISTIC MACRO EYE */
-        #macro-eye-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            opacity: 0;
-            z-index: 4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            will-change: opacity;
-        }
+  /* The fixed stage everything is drawn on */
+  .stage{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:#0a0a0a;
+    perspective:1200px;
+  }
 
-        .eye-globe {
-            width: 150vw;
-            height: 150vw;
-            max-width: 1200px;
-            max-height: 1200px;
-            position: relative;
-            border-radius: 50%;
-            background: radial-gradient(circle at 50% 50%, #050201 10%, #301608 20%, #633212 35%, #8f4c1e 45%, #210d04 70%, #000000 85%);
-            box-shadow: inset 0 0 150px #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  /* ---------- WALL + ELK LAYER (zooms into the eye) ---------- */
+  .wall{
+    position:absolute;
+    inset:0;
+    /* zoom origin sits on the elk's eye */
+    transform-origin:44% 46%;
+    will-change:transform, opacity;
+  }
+  .wall::before{
+    /* subtle off-white plaster wash behind the photo to blend edges */
+    content:"";
+    position:absolute; inset:-10%;
+    background:radial-gradient(120% 120% at 50% 40%, #f3f0e9 0%, #d9d5cb 55%, #b9b5ab 100%);
+  }
+  .wall__img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:contrast(1.05) saturate(1.02);
+  }
+  /* Elk title stamped across the bust */
+  .brand{
+    position:absolute;
+    left:50%;
+    top:66%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    color:var(--ink);
+    line-height:.82;
+    text-shadow:0 1px 0 rgba(255,255,255,.25);
+    pointer-events:none;
+    width:min(70vw, 720px);
+  }
+  .brand .mku{
+    font-size:clamp(2.4rem, 11vw, 8.5rem);
+    letter-spacing:.02em;
+  }
+  .brand .sub{
+    font-size:clamp(.55rem,1.6vw,1rem);
+    letter-spacing:.55em;
+    margin-top:.4em;
+    padding-left:.55em;
+    opacity:.7;
+  }
 
-        /* The glossy wet highlight of the cornea */
-        .cornea-gloss {
-            position: absolute;
-            top: 10%;
-            left: 20%;
-            width: 60%;
-            height: 40%;
-            border-radius: 50%;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(-15deg);
-            pointer-events: none;
-            z-index: 2;
-        }
+  /* ---------- SKYLINE / BUILDINGS (draw in from the sides) ---------- */
+  .skyline{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    will-change:opacity, transform;
+    mix-blend-mode:multiply;
+  }
+  .skyline path,
+  .skyline line,
+  .skyline polyline{
+    fill:none;
+    stroke:#111;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .skyline .thin{ stroke-width:1.4; opacity:.75; }
 
-        /* 5. CURVED NEON REFLECTION */
-        #neon-wrap {
-            position: absolute;
-            z-index: 5;
-            width: 100vw;
-            height: 100vh;
-            opacity: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            mix-blend-mode: screen;
-            pointer-events: none;
-            will-change: opacity, transform;
-            transform: scale(0.9);
-        }
+  /* ---------- DATE TEXT (pops up while zooming) ---------- */
+  .date{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(92vw, 900px);
+    text-align:center;
+    color:var(--ink);
+    pointer-events:none;
+    z-index:5;
+  }
+  .date .line{
+    display:block;
+    opacity:0;
+    transform:translateY(28px) scale(.96);
+    will-change:opacity, transform;
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+  }
+  .date .l1{ font-size:clamp(2rem,9vw,6rem); letter-spacing:.02em; }
+  .date .l2{ font-size:clamp(1rem,3.6vw,2.4rem); letter-spacing:.06em; margin-top:.25em; }
+  .date .l3{ font-size:clamp(1rem,3.6vw,2.4rem); letter-spacing:.28em; margin-top:.4em; }
+  .date .l4{ font-size:clamp(1rem,4.4vw,2.8rem); letter-spacing:.04em; margin-top:.5em; font-style:italic; }
 
-        .neon-svg-text {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 58px;
-            font-weight: 700;
-            fill: #ff2a2a;
-            letter-spacing: 4px;
-            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 25px rgba(0, 150, 255, 0.6));
-        }
+  /* ---------- EYE MACRO LAYER (the destination) ---------- */
+  .eye{
+    position:absolute; inset:0;
+    opacity:0;
+    will-change:transform, opacity;
+    transform-origin:49% 50%;
+  }
+  .eye__img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .eye__vignette{
+    position:absolute; inset:0;
+    background:radial-gradient(60% 60% at 49% 50%, transparent 40%, rgba(0,0,0,.55) 100%);
+    pointer-events:none;
+  }
 
-        /* 6. AKIRA-STYLE CYBERPUNK MARTINIS */
-        #akira-martini-stage {
-            position: absolute;
-            bottom: 10vh;
-            width: 500px;
-            height: 300px;
-            z-index: 6;
-            opacity: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            will-change: opacity;
-        }
+  /* ---------- RETRO NEON REFLECTION SIGN (inside the pupil) ---------- */
+  .sign{
+    position:absolute;
+    left:49%;
+    top:50%;
+    transform:translate(-50%,-50%) skewX(-6deg);
+    opacity:0;
+    will-change:opacity, transform;
+    text-align:center;
+    /* looks like a reflection on the wet eye */
+    mix-blend-mode:screen;
+  }
+  .sign__text{
+    font-family:"Monoton", "Anton", cursive;
+    font-size:clamp(1.4rem, 5.5vw, 3.6rem);
+    color:var(--neon);
+    letter-spacing:.06em;
+    text-shadow:
+      0 0 4px var(--neon),
+      0 0 12px var(--neon),
+      0 0 26px var(--neon-deep),
+      0 0 48px var(--neon-deep);
+    white-space:nowrap;
+  }
+  .sign__reflect{
+    display:block;
+    transform:scaleY(-1);
+    opacity:.28;
+    filter:blur(1px);
+    margin-top:.05em;
+  }
+  /* The glitching K */
+  .k{
+    position:relative;
+    display:inline-block;
+    animation:kflicker 2.6s infinite steps(1);
+  }
+  .k::before,
+  .k::after{
+    content:"K";
+    position:absolute;
+    left:0; top:0;
+  }
+  .k::before{ color:#ff2f6a; text-shadow:0 0 8px #ff2f6a; animation:kglitchA 2.6s infinite steps(1); }
+  .k::after{ color:#2fffe0; text-shadow:0 0 8px #2fffe0; animation:kglitchB 2.6s infinite steps(1); }
 
-        .akira-glass {
-            width: 140px;
-            height: 220px;
-            position: absolute;
-            will-change: transform;
-        }
+  @keyframes kflicker{
+    0%,7%,9%,54%,56%,100%{ opacity:1; }
+    8%,55%{ opacity:.15; }
+    62%,64%{ opacity:.4; }
+  }
+  @keyframes kglitchA{
+    0%,52%,100%{ transform:translate(0,0); opacity:0; }
+    53%{ transform:translate(-3px,-1px) skewX(8deg); opacity:.9; }
+    57%{ transform:translate(2px,1px); opacity:.7; }
+    60%{ transform:translate(-2px,0); opacity:0; }
+  }
+  @keyframes kglitchB{
+    0%,52%,100%{ transform:translate(0,0); opacity:0; }
+    54%{ transform:translate(3px,1px) skewX(-8deg); opacity:.9; }
+    58%{ transform:translate(-2px,-1px); opacity:.6; }
+    61%{ transform:translate(2px,0); opacity:0; }
+  }
 
-        /* Sharp silhouette shading */
-        .glass-base {
-            fill: #0a0a0a;
-            stroke: #333;
-            stroke-width: 2;
-        }
-        
-        .glass-highlight {
-            fill: rgba(255,255,255,0.1);
-        }
+  /* Sparks that fly off the K */
+  .sparks{
+    position:absolute;
+    /* placed over the K via JS-friendly offset */
+    left:calc(50% - 0.2em);
+    top:0;
+    width:0; height:0;
+    pointer-events:none;
+  }
+  .spark{
+    position:absolute;
+    width:3px; height:3px;
+    border-radius:50%;
+    background:var(--spark);
+    box-shadow:0 0 6px var(--spark), 0 0 12px var(--neon);
+    opacity:0;
+  }
+  .spark:nth-child(1){ animation:spark1 2.6s infinite; }
+  .spark:nth-child(2){ animation:spark2 2.6s infinite; }
+  .spark:nth-child(3){ animation:spark3 2.6s infinite; }
+  .spark:nth-child(4){ animation:spark4 2.6s infinite; }
+  .spark:nth-child(5){ animation:spark5 2.6s infinite; }
 
-        /* Luminous, toxic neon green */
-        .liquid-core {
-            fill: #00ff55;
-            filter: drop-shadow(0 0 15px #00ff55) drop-shadow(0 0 30px #00a136);
-        }
+  @keyframes spark1{ 0%,52%,100%{opacity:0;transform:translate(0,0) scale(1);} 53%{opacity:1;} 62%{opacity:0;transform:translate(28px,-34px) scale(.2);} }
+  @keyframes spark2{ 0%,52%,100%{opacity:0;transform:translate(0,0) scale(1);} 54%{opacity:1;} 63%{opacity:0;transform:translate(-32px,-20px) scale(.2);} }
+  @keyframes spark3{ 0%,52%,100%{opacity:0;transform:translate(0,0) scale(1);} 53%{opacity:1;} 61%{opacity:0;transform:translate(20px,26px) scale(.2);} }
+  @keyframes spark4{ 0%,53%,100%{opacity:0;transform:translate(0,0) scale(1);} 55%{opacity:1;} 64%{opacity:0;transform:translate(-24px,30px) scale(.2);} }
+  @keyframes spark5{ 0%,52%,100%{opacity:0;transform:translate(0,0) scale(1);} 54%{opacity:1;} 60%{opacity:0;transform:translate(40px,4px) scale(.2);} }
 
-        #aglass-left { left: 80px; transform: rotate(-20deg); }
-        #aglass-right { right: 80px; transform: rotate(20deg); }
+  /* ---------- scroll hint ---------- */
+  .hint{
+    position:fixed;
+    left:50%; bottom:26px;
+    transform:translateX(-50%);
+    color:var(--ink);
+    letter-spacing:.4em;
+    font-size:.7rem;
+    padding-left:.4em;
+    z-index:10;
+    transition:opacity .4s ease;
+    text-shadow:0 1px 0 rgba(255,255,255,.4);
+  }
+  .hint span{ display:inline-block; animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(6px);} }
 
-        /* Sharp vector splash */
-        #akira-splash {
-            position: absolute;
-            top: 10px;
-            width: 200px;
-            height: 200px;
-            opacity: 0;
-            will-change: transform, opacity;
-        }
-
-        .splash-shard {
-            fill: #00ff55;
-            filter: drop-shadow(0 0 10px #00ff55);
-        }
-
-        /* Cinematic light dimming when the neon/martinis appear */
-        #cinematic-vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.8) 100%);
-            opacity: 0;
-            z-index: 7;
-            pointer-events: none;
-            will-change: opacity;
-        }
-
-    </style>
+  @media (prefers-reduced-motion: reduce){
+    .k, .k::before, .k::after, .spark{ animation:none !important; }
+    .hint span{ animation:none; }
+  }
+</style>
 </head>
 <body>
 
-    <svg style="width:0; height:0; position:absolute;">
-        <filter id="rough-paper">
-            <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
+  <div class="stage" aria-hidden="true">
 
-    <div id="lens">
-        
-        <div id="frame-wrapper">
-            <img id="elk-img" src="https://images.unsplash.com/photo-1482822619438-e6d63e9f0294?auto=format&fit=crop&w=800&q=80" alt="Elk Reference">
-        </div>
-
-        <div class="sketch-zone" id="sketch-left">
-            <svg viewBox="0 0 200 300" width="100%" height="100%">
-                <path class="arch-line" d="M10,300 L10,120 L40,120 L40,300 M40,300 L40,60 L90,60 L90,300 M90,300 L90,180 L160,180 L160,300 M30,100 L70,100 M60,220 L120,220" />
-            </svg>
-        </div>
-        <div class="sketch-zone" id="sketch-right">
-            <svg viewBox="0 0 200 300" width="100%" height="100%">
-                <path class="arch-line" d="M190,300 L190,140 L150,140 L150,300 M150,300 L150,40 L100,40 L100,300 M100,300 L100,200 L40,200 L40,300 M160,110 L120,110 M140,240 L80,240" />
-            </svg>
-        </div>
-
-        <div id="macro-eye-scene">
-            <div class="eye-globe">
-                <div style="width: 25%; height: 25%; background: #000; border-radius: 50%; box-shadow: 0 0 40px rgba(0,0,0,0.9);"></div>
-                <div class="cornea-gloss"></div>
-            </div>
-        </div>
-
-        <div id="neon-wrap">
-            <svg viewBox="0 0 600 300" width="100vw" height="50vh" style="max-width: 1000px;">
-                <path id="curve-path" d="M 50,200 Q 300,50 550,200" fill="transparent" />
-                <text class="neon-svg-text">
-                    <textPath href="#curve-path" startOffset="50%" text-anchor="middle">
-                        M<tspan style="fill:#fff; text-shadow: 0 0 10px #00f;">K</tspan>-ULTRA
-                    </textPath>
-                </text>
-            </svg>
-        </div>
-
-        <div id="akira-martini-stage">
-            
-            <svg id="akira-splash" viewBox="0 0 200 200">
-                <polygon class="splash-shard" points="100,100 110,60 115,100" />
-                <polygon class="splash-shard" points="100,100 80,40 90,100" />
-                <polygon class="splash-shard" points="100,100 140,70 120,110" />
-                <polygon class="splash-shard" points="100,100 60,80 85,120" />
-                <circle cx="110" cy="30" r="3" fill="#00ff55" />
-                <circle cx="70" cy="20" r="4" fill="#00ff55" />
-                <circle cx="150" cy="50" r="2.5" fill="#00ff55" />
-            </svg>
-
-            <svg id="aglass-left" class="akira-glass" viewBox="0 0 140 220">
-                <path class="glass-base" d="M20,20 L120,20 L75,110 L75,200 L95,200 L95,210 L45,210 L45,200 L65,200 L65,110 Z" />
-                <path class="glass-highlight" d="M25,25 L65,105 L55,105 L20,35 Z" />
-                <path class="liquid-core" d="M35,50 L105,50 L70,110 Z" />
-            </svg>
-
-            <svg id="aglass-right" class="akira-glass" viewBox="0 0 140 220">
-                <path class="glass-base" d="M20,20 L120,20 L75,110 L75,200 L95,200 L95,210 L45,210 L45,200 L65,200 L65,110 Z" />
-                <path class="glass-highlight" d="M115,25 L75,105 L85,105 L120,35 Z" />
-                <path class="liquid-core" d="M35,50 L105,50 L70,110 Z" />
-            </svg>
-        </div>
-
-        <div id="cinematic-vignette"></div>
-
+    <!-- WALL + ELK -->
+    <div class="wall" id="wall">
+      <img class="wall__img" src="images/elk-bust.png" alt="" />
+      <div class="brand">
+        <div class="mku">MK-ULTRA</div>
+        <div class="sub">A PARTY SERIES</div>
+      </div>
     </div>
 
-    <script>
-        const frame = document.getElementById('frame-wrapper');
-        const sketchLeft = document.getElementById('sketch-left');
-        const sketchRight = document.getElementById('sketch-right');
-        const macroEye = document.getElementById('macro-eye-scene');
-        const neon = document.getElementById('neon-wrap');
-        const martiniStage = document.getElementById('akira-martini-stage');
-        const glassLeft = document.getElementById('aglass-left');
-        const glassRight = document.getElementById('aglass-right');
-        const splash = document.getElementById('akira-splash');
-        const vignette = document.getElementById('cinematic-vignette');
+    <!-- BUILDINGS drawn in from both sides -->
+    <svg class="skyline" id="skyline" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <!-- LEFT skyline (grows toward middle) -->
+      <g id="left">
+        <path d="M20,1000 L20,520 L70,520 L70,470 L120,470 L120,560 L160,560 L160,1000" />
+        <path d="M150,1000 L150,430 L210,430 L210,380 L210,430 L270,430 L270,1000" />
+        <path d="M255,1000 L255,560 L255,300 L320,300 L320,340 L360,340 L360,1000" />
+        <path class="thin" d="M90,520 L90,470 M100,520 L100,480 M180,430 L180,395 M230,430 L230,400" />
+        <!-- squiggle wire toward eye -->
+        <path class="thin" d="M320,470 C360,455 380,500 415,478 S455,455 470,472" />
+        <polyline class="thin" points="255,300 275,270 300,300 320,275 340,300" />
+      </g>
+      <!-- RIGHT skyline (mirror) -->
+      <g id="right">
+        <path d="M980,1000 L980,520 L930,520 L930,470 L880,470 L880,560 L840,560 L840,1000" />
+        <path d="M850,1000 L850,430 L790,430 L790,380 L790,430 L730,430 L730,1000" />
+        <path d="M745,1000 L745,560 L745,300 L680,300 L680,340 L640,340 L640,1000" />
+        <path class="thin" d="M910,520 L910,470 M900,520 L900,480 M820,430 L820,395 M770,430 L770,400" />
+        <path class="thin" d="M680,470 C640,455 620,500 585,478 S545,455 530,472" />
+        <polyline class="thin" points="745,300 725,270 700,300 680,275 660,300" />
+      </g>
+    </svg>
 
-        let scrollY = 0;
-        let ticking = false;
+    <!-- DATE TEXT -->
+    <div class="date" id="date">
+      <span class="line l1">JULY 4TH</span>
+      <span class="line l2">506 S GREEN STREET</span>
+      <span class="line l3">B Y O</span>
+      <span class="line l4">The Night is Still Young…</span>
+    </div>
 
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    renderFrame(scrollY);
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        });
+    <!-- EYE MACRO -->
+    <div class="eye" id="eye">
+      <img class="eye__img" src="images/deer-eye.png" alt="" />
+      <div class="eye__vignette"></div>
+      <!-- retro neon reflection sign inside the pupil -->
+      <div class="sign" id="sign">
+        <div class="sign__text">M<span class="k">K</span>-ULTRA<span class="sparks">
+          <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+        </span></div>
+        <div class="sign__text sign__reflect">M<span class="k">K</span>-ULTRA</div>
+      </div>
+    </div>
 
-        function renderFrame(y) {
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const p = Math.min(y / maxScroll, 1);
+  </div>
 
-            // 1. ZOOMING THE ELK & FRAME (0.0 -> 0.4)
-            if (p < 0.4) {
-                // Starts normal, accelerates into a massive zoom
-                let scaleCurve = Math.pow(p / 0.4, 4);
-                frame.style.transform = `scale(${1 + (scaleCurve * 45)})`;
-                frame.style.opacity = 1;
-            } else {
-                frame.style.opacity = 0; // Completely inside the eye now
-            }
+  <div class="hint" id="hint">SCROLL<br><span>▼</span></div>
 
-            // 2. ARCHITECTURAL SQUIGGLES (0.05 -> 0.35)
-            if (p > 0.05 && p < 0.4) {
-                let buildP = Math.min(Math.max((p - 0.05) / 0.25, 0), 1);
-                sketchLeft.style.opacity = buildP;
-                sketchRight.style.opacity = buildP;
-                sketchLeft.style.transform = `translateX(${-100 + (buildP * 100)}%)`;
-                sketchRight.style.transform = `translateX(${100 - (buildP * 100)}%)`;
-            } else {
-                sketchLeft.style.opacity = 0;
-                sketchRight.style.opacity = 0;
-            }
+  <!-- The invisible track that gives us something to scroll through -->
+  <div class="scroll-track"></div>
 
-            // 3. HYPER-REALISTIC MACRO EYE FADE (0.35 -> 0.5)
-            if (p >= 0.35) {
-                let eyeP = Math.min((p - 0.35) / 0.15, 1);
-                macroEye.style.opacity = eyeP;
-            } else {
-                macroEye.style.opacity = 0;
-            }
+<script>
+(function(){
+  const wall    = document.getElementById('wall');
+  const skyline = document.getElementById('skyline');
+  const dateEl  = document.getElementById('date');
+  const lines   = Array.from(dateEl.querySelectorAll('.line'));
+  const eye     = document.getElementById('eye');
+  const sign    = document.getElementById('sign');
+  const hint    = document.getElementById('hint');
 
-            // 4. NEON WRAP REFLECTION (0.5 -> 0.8)
-            if (p >= 0.5) {
-                let neonP = Math.min((p - 0.5) / 0.15, 1);
-                neon.style.opacity = neonP;
-                // Simulates the reflection shifting as we zoom deeper
-                neon.style.transform = `scale(${0.9 + (neonP * 0.1)}) translateY(${20 - (neonP * 20)}px)`;
-            } else {
-                neon.style.opacity = 0;
-            }
+  // Prep each drawable stroke so we can "draw" it via stroke-dashoffset.
+  const strokes = Array.from(skyline.querySelectorAll('path, polyline, line'));
+  strokes.forEach(el => {
+    const len = el.getTotalLength();
+    el.style.strokeDasharray  = len;
+    el.style.strokeDashoffset = len;
+    el.dataset.len = len;
+  });
 
-            // 5. AKIRA MARTINIS & SPLASH (0.75 -> 1.0)
-            if (p >= 0.75) {
-                let stageP = Math.min((p - 0.75) / 0.1, 1);
-                martiniStage.style.opacity = stageP;
-                vignette.style.opacity = stageP; // Darkens the edges so the neon pops
+  const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+  const lerp  = (a,b,t)=>a+(b-a)*t;
+  // normalize progress between start..end -> 0..1
+  const range = (p,s,e)=>clamp((p-s)/(e-s),0,1);
+  const easeOut = t => 1-Math.pow(1-t,3);
+  const easeInOut = t => t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
 
-                // Clink physics
-                let clinkP = Math.min(Math.max((p - 0.85) / 0.1, 0), 1);
-                
-                glassLeft.style.transform = `translateX(${clinkP * 65}px) rotate(${-20 + (clinkP * 20)}deg)`;
-                glassRight.style.transform = `translateX(${-clinkP * 65}px) rotate(${20 - (clinkP * 20)}deg)`;
+  let progress = 0;
 
-                // Explosive splash physics
-                if (clinkP > 0.9) {
-                    let splashP = (clinkP - 0.9) / 0.1;
-                    splash.style.opacity = Math.max(1 - splashP, 0); 
-                    splash.style.transform = `scale(${0.5 + splashP}) translateY(${-splashP * 60}px)`;
-                } else {
-                    splash.style.opacity = 0;
-                    splash.style.transform = `scale(0.2) translateY(0)`;
-                }
-            } else {
-                martiniStage.style.opacity = 0;
-                splash.style.opacity = 0;
-                vignette.style.opacity = 0;
-            }
-        }
-        
-        renderFrame(window.scrollY);
-    </script>
+  function render(){
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+    const p = progress;
+
+    /* ----- WALL zoom into the eye ----- */
+    const zoom = easeInOut(range(p, 0, 0.62));
+    const scale = lerp(1, 11, zoom);
+    wall.style.transform = 'scale(' + scale.toFixed(4) + ')';
+    wall.style.opacity   = (1 - range(p, 0.5, 0.62)).toFixed(3);
+
+    /* ----- SKYLINE draws in, then fades as we enter the eye ----- */
+    const draw = easeOut(range(p, 0.06, 0.46));
+    strokes.forEach(el => {
+      const len = parseFloat(el.dataset.len);
+      el.style.strokeDashoffset = (len * (1 - draw)).toFixed(2);
+    });
+    // buildings ride the same zoom so they rush toward the middle/eye
+    const skyScale = lerp(1, 3.4, zoom);
+    skyline.style.transform = 'scale(' + skyScale.toFixed(3) + ')';
+    skyline.style.transformOrigin = '44% 46%';
+    skyline.style.opacity = (1 - range(p, 0.42, 0.56)).toFixed(3);
+
+    /* ----- DATE text pops in (staggered), holds, then fades ----- */
+    const dateFade = 1 - range(p, 0.44, 0.54);
+    lines.forEach((line, i) => {
+      const start = 0.14 + i * 0.05;
+      const t = easeOut(range(p, start, start + 0.12));
+      const y = lerp(28, 0, t);
+      const s = lerp(0.96, 1, t);
+      line.style.opacity   = (t * dateFade).toFixed(3);
+      line.style.transform = 'translateY(' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
+    });
+
+    /* ----- EYE macro fades/settles in as destination ----- */
+    const eyeIn = easeInOut(range(p, 0.52, 0.72));
+    eye.style.opacity = eyeIn.toFixed(3);
+    eye.style.transform = 'scale(' + lerp(1.35, 1, eyeIn).toFixed(4) + ')';
+
+    /* ----- NEON reflection sign reveals last, then glitches (CSS) ----- */
+    const signIn = easeOut(range(p, 0.8, 0.94));
+    sign.style.opacity = signIn.toFixed(3);
+    sign.style.transform =
+      'translate(-50%,-50%) skewX(-6deg) scale(' + lerp(0.85, 1, signIn).toFixed(3) + ')';
+
+    /* scroll hint hides once you begin */
+    hint.style.opacity = (1 - range(p, 0, 0.05)).toFixed(3);
+
+    ticking = false;
+  }
+
+  let ticking = false;
+  function onScroll(){
+    if(!ticking){ ticking = true; requestAnimationFrame(render); }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', () => {
+    // recompute stroke lengths on resize for accurate draw
+    strokes.forEach(el => {
+      const len = el.getTotalLength();
+      el.style.strokeDasharray = len;
+      el.dataset.len = len;
+    });
+    render();
+  });
+
+  render();
+})();
+</script>
 </body>
 </html>
