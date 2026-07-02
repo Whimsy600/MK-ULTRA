@@ -3,501 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MK-ULTRA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <title>MK-ULTRA | The Elk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* Force the browser layout engine to respect scrolling constraints */
-        html, body {
+        /* 1. FORCE THE SCROLL TRACK */
+        body, html {
             margin: 0;
             padding: 0;
-            width: 100%;
+            background-color: #ffffff;
+            /* This guarantees a massive scrollable area regardless of browser */
+            height: 1000vh; 
             overflow-x: hidden;
-            overflow-y: auto !important;
-            background-color: #f5f5f5;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        body {
-            background: radial-gradient(circle, #ffffff 40%, #e2e2e2 100%);
-            color: #000000;
-            font-family: 'Space Grotesk', sans-serif;
-            /* Using rigid pixels instead of vh to guarantee a massive scroll track on all engines */
-            min-height: 5200px; 
-        }
-
-        /* Fixed viewport canvas wrapper */
-        .scroller-container {
+        /* 2. THE FIXED CAMERA CANVAS */
+        #camera-lens {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            pointer-events: none;
-            perspective: 1500px;
-            z-index: 10;
+            background: #ffffff;
+            perspective: 1000px;
         }
 
-        /* --- STAGE 1: SQUIGGLY FLANK BUILDINGS --- */
-        .skyline-flanks {
+        /* --- SCENE 1: THE ELK & FRAME --- */
+        #wood-frame {
             position: absolute;
+            width: 300px;
+            height: 400px;
+            border: 20px solid #3e2723; /* Dark wood frame */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #000;
+            transform-origin: center center;
+            will-change: transform, opacity;
+            z-index: 2;
+        }
+
+        /* Using a placeholder for your hyper-realistic elk. Swap the src for yours. */
+        #elk-image {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            transform-origin: 50% 40%; /* Anchors the zoom directly on the eye */
+        }
+
+        /* --- SCENE 2: SQUIGGLY BUILDINGS --- */
+        .building-container {
+            position: absolute;
+            bottom: 0;
+            width: 40vw;
+            height: 60vh;
+            z-index: 3;
+            will-change: transform, opacity;
+            opacity: 0;
+        }
+
+        #buildings-left { left: 0; transform: translateX(-100%); }
+        #buildings-right { right: 0; transform: translateX(100%); }
+
+        .squiggly-line {
+            fill: none;
+            stroke: #000000;
+            stroke-width: 3;
+            filter: url(#squiggle-filter);
+        }
+
+        /* --- SCENE 3: MACRO BROWN EYE --- */
+        #macro-eye {
+            position: absolute;
             top: 0;
             left: 0;
-            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #0a0502 5%, #3e1f0b 25%, #5c3012 40%, #1a0b04 80%, #000000 100%);
+            opacity: 0;
+            z-index: 4;
+            will-change: opacity;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            overflow: hidden;
-        }
-
-        .flank-svg {
-            width: 32vw;
-            height: 85vh;
-            will-change: transform, opacity;
-            filter: url(#distort-squiggle); /* Continuous calculation of unstable sketch lines */
-        }
-
-        #left-flank {
-            transform: translateX(-100%) scaleX(0.3);
-            transform-origin: left bottom;
-            fill: none;
-            stroke: #111111;
-            stroke-width: 2;
-        }
-
-        #right-flank {
-            transform: translateX(100%) scaleX(0.3);
-            transform-origin: right bottom;
-            fill: none;
-            stroke: #111111;
-            stroke-width: 2;
-        }
-
-        /* --- STAGE 2: INITIAL PHOTO CANVAS --- */
-        .hero {
-            display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            transform-origin: 48.5% 42.5%; /* Aimed dead center at the target elk pupil coordinate */
-            z-index: 2;
+        }
+
+        /* --- SCENE 4: NEON GLOBE REFLECTION --- */
+        #neon-reflection {
+            position: absolute;
+            z-index: 5;
+            opacity: 0;
+            transform: rotateX(25deg) scale(0.8);
+            text-align: center;
+            mix-blend-mode: screen;
             will-change: transform, opacity;
         }
 
-        .frame {
-            width: 240px;
-            height: 300px;
-            background: #ffffff; 
-            border: 14px solid #1c120c;
-            box-shadow: 0 40px 70px rgba(0,0,0,0.25);
+        .neon-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 6rem;
+            color: rgba(255, 50, 50, 0.9);
+            text-shadow: 
+                0 0 10px rgba(255, 0, 0, 0.8),
+                0 0 20px rgba(255, 0, 0, 0.6),
+                0 0 40px rgba(0, 100, 255, 0.6),
+                0 0 80px rgba(0, 100, 255, 0.4);
+        }
+
+        .glitch-k {
+            display: inline-block;
+            animation: retroGlitch 3s infinite;
+        }
+
+        @keyframes retroGlitch {
+            0%, 90%, 96%, 100% { opacity: 1; color: rgba(255, 50, 50, 0.9); text-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+            92%, 98% { opacity: 0.3; color: #fff; text-shadow: 0 0 5px #00f; }
+            94% { opacity: 0.8; transform: translateX(-3px); }
+        }
+
+        /* --- SCENE 5: ART DECO MARTINIS & SPLASH --- */
+        #martini-stage {
+            position: absolute;
+            bottom: 15vh;
+            width: 400px;
+            height: 250px;
+            z-index: 6;
+            opacity: 0;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .elk-image {
-            width: 110%;
-            height: 110%;
-            object-fit: contain;
-            object-position: bottom center;
-            filter: contrast(1.15) brightness(0.9) grayscale(0.15);
-            position: absolute;
-            bottom: -5px;
-        }
-
-        h1 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: 14px;
-            text-transform: uppercase;
-            text-align: center;
-            color: #000000;
             will-change: opacity;
         }
 
-        /* --- STAGE 3: HYPER-REALISTIC MICROSCOPIC DEER EYE --- */
-        .macro-eye-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transform: scale(0.1);
-            z-index: 3;
-            will-change: opacity, transform;
-        }
-
-        .macro-eye-svg {
-            width: 120vw;
-            height: 120vh;
-            max-width: 1500px;
-            max-height: 1500px;
-        }
-
-        /* --- STAGE 4: SUBTLE RETRO NEON EYE REFLECTION --- */
-        .neon-reflection-wrapper {
-            position: absolute;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 4;
-            opacity: 0;
-            pointer-events: none;
-            mix-blend-mode: screen; /* Fuses neon photons straight into iris paths */
-            will-change: opacity, transform;
-        }
-
-        .neon-sign {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 5rem;
-            font-weight: 700;
-            letter-spacing: 18px;
-            text-align: center;
-            /* Crimson neon core containing deep sapphire gas perimeters */
-            color: rgba(255, 35, 35, 0.9);
-            text-shadow: 
-                0 0 4px rgba(255, 20, 20, 0.9),
-                0 0 12px rgba(255, 20, 20, 0.5),
-                0 0 22px rgba(0, 90, 255, 0.8),
-                0 0 44px rgba(0, 90, 255, 0.5);
-            transform: scale(0.85) perspective(600px) rotateX(12deg);
-        }
-
-        /* Isolated loop running code exclusively for character "K" */
-        .glitch-k {
-            display: inline-block;
-            animation: voltageDrop 2.8s infinite linear;
-        }
-
-        @keyframes voltageDrop {
-            0%, 75%, 82%, 88%, 100% { 
-                color: rgba(255, 35, 35, 0.9);
-                text-shadow: 0 0 4px rgba(255, 20, 20, 0.9), 0 0 22px rgba(0, 90, 255, 0.8);
-            }
-            76%, 81%, 85% { 
-                color: rgba(35, 8, 8, 0.25);
-                text-shadow: 0 0 1px rgba(0, 50, 160, 0.2);
-            }
-            78% {
-                color: #ffffff;
-                text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea;
-            }
-        }
-
-        /* --- STAGE 5: EMERALD LIQUID MARTINI FINALE --- */
-        .clink-universe {
-            position: absolute;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            z-index: 5;
-            transform: scale(0.8);
-            will-change: opacity, transform;
-        }
-
-        .martini-stage {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            width: 500px;
-            height: 260px;
-            position: relative;
-            margin-bottom: 20px;
-        }
-
         .glass {
+            width: 120px;
+            height: 180px;
+            position: absolute;
+            will-change: transform;
+        }
+
+        /* Art Deco styling for the glasses */
+        .glass-path {
+            fill: rgba(10, 10, 10, 0.9);
+            stroke: #d4af37; /* Gold rim */
+            stroke-width: 2;
+        }
+        .liquid-path { fill: #00ff44; opacity: 0.8; }
+
+        #glass-left { left: 50px; transform: rotate(-15deg); }
+        #glass-right { right: 50px; transform: rotate(15deg); }
+
+        #splash-fx {
+            position: absolute;
+            top: 20px;
             width: 150px;
-            height: 210px;
-            position: absolute;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: bottom center;
-        }
-
-        .glass-left { left: 90px; transform: rotate(-14deg); }
-        .glass-right { right: 90px; transform: rotate(14deg); }
-
-        /* Collision assignments */
-        .martini-stage.clinked .glass-left { transform: translateX(55px) rotate(22deg); }
-        .martini-stage.clinked .glass-right { transform: translateX(-55px) rotate(-22deg); }
-
-        /* Liquid Splatter Physics Elements */
-        .emerald-splatter {
-            position: absolute;
-            top: 25px;
-            width: 100%;
-            height: 120px;
-            pointer-events: none;
+            height: 150px;
             opacity: 0;
-            fill: #00ff66;
-            filter: drop-shadow(0 0 10px #00ff66);
+            fill: #00ff44;
+            filter: drop-shadow(0 0 10px #00ff44);
+            will-change: transform, opacity;
         }
-
-        .martini-stage.clinked .emerald-splatter {
-            animation: liquidEruption 0.7s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
-            animation-delay: 0.08s;
-        }
-
-        @keyframes liquidEruption {
-            0% { opacity: 0; transform: scale(0.4) translateY(20px); }
-            35% { opacity: 1; }
-            100% { opacity: 0; transform: scale(1.3) translateY(-40px); filter: blur(2px); }
-        }
-
-        /* --- STREAMING DATA TEXT LAYERS --- */
-        .info-container {
-            position: absolute;
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            pointer-events: auto;
-            z-index: 6;
-        }
-
-        .info-line {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            opacity: 0;
-            filter: blur(20px);
-            transform: translateY(50px);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            color: #000000;
-        }
-
-        .info-line.reveal { opacity: 1; filter: blur(0px); transform: translateY(0); }
-
-        .tagline {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.2rem;
-            color: #ffffff;
-            letter-spacing: 8px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-            text-shadow: 0 0 8px rgba(255,255,255,0.4);
-            margin-top: 30px;
-        }
-        .tagline.reveal { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <svg style="position: absolute; width: 0; height: 0;">
-        <defs>
-            <filter id="distort-squiggle">
-                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
-            <filter id="iris-flesh">
-                <feTurbulence type="turbulence" baseFrequency="0.07" numOctaves="4" result="grain" />
-                <feDisplacementMap in="SourceGraphic" in2="grain" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
+    <svg style="width:0; height:0; position:absolute;">
+        <filter id="squiggle-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
     </svg>
 
-    <div class="scroller-container">
+    <div id="camera-lens">
         
-        <div class="skyline-flanks">
-            <svg id="left-flank" class="flank-svg" viewBox="0 0 150 300">
-                <path d="M 10 300 L 10 130 L 45 130 L 45 300 Z" />
-                <path d="M 45 300 L 45 50 L 95 50 L 95 300 Z" />
-                <path d="M 95 300 L 95 170 L 140 170 L 140 300 Z" />
-                <line x1="45" y1="90" x2="95" y2="90" />
-                <line x1="45" y1="140" x2="95" y2="140" />
-            </svg>
-            <svg id="right-flank" class="flank-svg" viewBox="0 0 150 300">
-                <path d="M 10 300 L 10 190 L 50 190 L 50 300 Z" />
-                <path d="M 50 300 L 50 30 L 105 30 L 105 300 Z" />
-                <path d="M 105 300 L 105 110 L 145 110 L 145 300 Z" />
-                <line x1="50" y1="80" x2="105" y2="80" />
-                <line x1="50" y1="140" x2="105" y2="140" />
-            </svg>
-        </div>
-        
-        <div class="hero" id="hero-assets">
-            <div class="frame">
-                <img class="elk-image" src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQNZPEStJGIB2NDSmifGwuFOaOoL7OTrdF3YvNCxyjchsG7RKOxyMfQHl72S0-JqD6kVeff37QWuLzkNfGPH0y-euYwt4tPc55z" alt="MK-ULTRA Elk">
-            </div>
-            <h1 id="main-title">MK-ULTRA</h1>
+        <div id="wood-frame">
+            <img id="elk-image" src="https://images.unsplash.com/photo-1605335961623-a607997992cb?q=80&w=600&auto=format&fit=crop" alt="Hyper Realistic Elk">
         </div>
 
-        <div class="macro-eye-container" id="eye-layer">
-            <svg class="macro-eye-svg" viewBox="0 0 400 400">
-                <defs>
-                    <radialGradient id="hyper-iris" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#73421c"/>
-                        <stop offset="35%" stop-color="#4f2910"/>
-                        <stop offset="70%" stop-color="#261305"/>
-                        <stop offset="92%" stop-color="#080401"/>
-                        <stop offset="100%" stop-color="#000000"/>
-                    </radialGradient>
-                </defs>
-                <circle cx="200" cy="200" r="190" fill="#0b0604" />
-                <circle cx="200" cy="200" r="170" fill="url(#hyper-iris)" filter="url(#iris-flesh)" />
-                <circle cx="200" cy="200" r="142" fill="none" stroke="#8c5126" stroke-width="5" stroke-dasharray="2, 6" filter="url(#iris-flesh)" opacity="0.8"/>
-                <circle cx="200" cy="200" r="118" fill="none" stroke="#bd7846" stroke-width="2.5" stroke-dasharray="4, 3" opacity="0.7"/>
-                <circle cx="200" cy="200" r="95" fill="none" stroke="#1f0c02" stroke-width="11" stroke-dasharray="3, 11" filter="url(#iris-flesh)"/>
-                
-                <rect x="90" y="184" width="220" height="32" rx="16" fill="#000000" id="pupil" />
-                
-                <path d="M70,120 Q200,50 330,120 Q200,85 70,120 Z" fill="rgba(255,255,255,0.16)" />
-                <circle cx="275" cy="245" r="14" fill="rgba(255,255,255,0.05)" />
+        <div class="building-container" id="buildings-left">
+            <svg viewBox="0 0 200 300" width="100%" height="100%">
+                <path class="squiggly-line" d="M20,300 L20,150 L60,150 L60,300 M60,300 L60,50 L120,50 L120,300 M120,300 L120,200 L180,200 L180,300" />
+            </svg>
+        </div>
+        <div class="building-container" id="buildings-right">
+            <svg viewBox="0 0 200 300" width="100%" height="100%">
+                <path class="squiggly-line" d="M180,300 L180,120 L140,120 L140,300 M140,300 L140,80 L80,80 L80,300 M80,300 L80,180 L20,180 L20,300" />
             </svg>
         </div>
 
-        <div class="neon-reflection-wrapper" id="neon-layer">
-            <div class="neon-sign">
-                M<span class="glitch-k">K</span>-ULTRA
-            </div>
+        <div id="macro-eye"></div>
+
+        <div id="neon-reflection">
+            <h1 class="neon-text">M<span class="glitch-k">K</span>-ULTRA</h1>
         </div>
 
-        <div class="info-container" id="text-canvas">
-            <div class="info-line" data-reveal="200">BYO</div>
-            <div class="info-line" data-reveal="600">MK-ULTRA opening night</div>
-            <div class="info-line" data-reveal="1000">July 4th</div>
-            <div class="info-line" data-reveal="1400">506 S Green Street</div>
-        </div>
+        <div id="martini-stage">
+            <svg id="splash-fx" viewBox="0 0 100 100">
+                <circle cx="30" cy="30" r="4" />
+                <circle cx="70" cy="25" r="5" />
+                <circle cx="50" cy="15" r="3" />
+                <path d="M40,50 Q50,20 60,50 Z" />
+            </svg>
 
-        <div class="clink-universe" id="clink-zone">
-            <div class="martini-stage" id="stage">
-                <svg class="emerald-splatter" viewBox="0 0 100 100">
-                    <circle cx="46" cy="48" r="3" />
-                    <circle cx="54" cy="46" r="2.5" />
-                    <circle cx="50" cy="32" r="3.5" />
-                    <path d="M46,40 Q50,6 54,37 Z" />
-                    <path d="M51,42 Q55,9 58,39 Z" />
-                </svg>
+            <svg id="glass-left" class="glass" viewBox="0 0 100 150">
+                <path class="glass-path" d="M10,20 L90,20 L55,70 L55,140 L70,140 L70,145 L30,145 L30,140 L45,140 L45,70 Z" />
+                <path class="liquid-path" d="M25,35 L75,35 L50,70 Z" />
+            </svg>
 
-                <svg class="glass glass-left" viewBox="0 0 100 150">
-                    <path d="M10,20 L90,20 L53,80 L53,140 L75,140 L75,146 L25,146 L25,140 L47,140 L47,80 Z" fill="none" stroke="#ffffff" stroke-width="3" />
-                    <path d="M22,38 L78,38 L50,80 Z" fill="#00ff66" opacity="0.85" filter="drop-shadow(0 0 6px #00ff66)" />
-                    <line x1="50" y1="85" x2="50" y2="135" stroke="#ffffff" stroke-width="1" />
-                </svg>
-
-                <svg class="glass glass-right" viewBox="0 0 100 150">
-                    <path d="M10,20 L90,20 L53,80 L53,140 L75,140 L75,146 L25,146 L25,140 L47,140 L47,80 Z" fill="none" stroke="#ffffff" stroke-width="3" />
-                    <path d="M22,38 L78,38 L50,80 Z" fill="#00ff66" opacity="0.85" filter="drop-shadow(0 0 6px #00ff66)" />
-                    <line x1="50" y1="85" x2="50" y2="135" stroke="#ffffff" stroke-width="1" />
-                </svg>
-            </div>
-            <div class="info-line tagline" id="final-tag">The Night Is Still Young...</div>
+            <svg id="glass-right" class="glass" viewBox="0 0 100 150">
+                <path class="glass-path" d="M10,20 L90,20 L55,70 L55,140 L70,140 L70,145 L30,145 L30,140 L45,140 L45,70 Z" />
+                <path class="liquid-path" d="M25,35 L75,35 L50,70 Z" />
+            </svg>
         </div>
 
     </div>
 
     <script>
-        // DOM Safety Vault: Ensures script strictly executes AFTER elements exist in browser memory
-        document.addEventListener("DOMContentLoaded", () => {
-            const leftFlank = document.getElementById('left-flank');
-            const rightFlank = document.getElementById('right-flank');
-            const hero = document.getElementById('hero-assets');
-            const mainTitle = document.getElementById('main-title');
-            const eyeLayer = document.getElementById('eye-layer');
-            const neonLayer = document.getElementById('neon-layer');
-            const textCanvas = document.getElementById('text-canvas');
-            const clinkZone = document.getElementById('clink-zone');
-            const stage = document.getElementById('stage');
-            const finalTag = document.getElementById('final-tag');
-            const infoLines = document.querySelectorAll('.info-line:not(.tagline)');
-            const pupil = document.getElementById('pupil');
+        // DOM Elements
+        const frame = document.getElementById('wood-frame');
+        const elkImg = document.getElementById('elk-image');
+        const bldLeft = document.getElementById('buildings-left');
+        const bldRight = document.getElementById('buildings-right');
+        const macroEye = document.getElementById('macro-eye');
+        const neon = document.getElementById('neon-reflection');
+        const martiniStage = document.getElementById('martini-stage');
+        const glassLeft = document.getElementById('glass-left');
+        const glassRight = document.getElementById('glass-right');
+        const splash = document.getElementById('splash-fx');
 
-            let lastKnownScrollPosition = 0;
-            let ticking = false;
+        // Render loop variables
+        let scrollY = 0;
+        let ticking = false;
 
-            window.addEventListener('scroll', () => {
-                lastKnownScrollPosition = window.pageYOffset || document.documentElement.scrollTop || window.scrollY;
+        // Core scroll listener
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateScene(scrollY);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // The Master Timeline Logic
+        function updateScene(y) {
+            // Calculate total scroll progress as a percentage from 0.0 to 1.0
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const p = Math.min(y / maxScroll, 1);
+
+            // --- 1. ZOOMING THE ELK & FRAME (Progress: 0.0 -> 0.4) ---
+            // Scale goes from 1x to 35x to push inside the eye
+            let frameScale = 1;
+            if (p < 0.4) {
+                frameScale = 1 + (Math.pow(p / 0.4, 3) * 35); 
+                frame.style.opacity = 1;
+            } else {
+                frameScale = 36;
+                frame.style.opacity = 0; // Hide it once we are inside
+            }
+            frame.style.transform = `scale(${frameScale})`;
+
+            // --- 2. SQUIGGLY BUILDINGS DRAW IN (Progress: 0.1 -> 0.3) ---
+            if (p > 0.05 && p < 0.4) {
+                let buildP = Math.min(Math.max((p - 0.05) / 0.25, 0), 1);
+                bldLeft.style.opacity = buildP;
+                bldRight.style.opacity = buildP;
+                // Move from off-screen to center
+                bldLeft.style.transform = `translateX(${-100 + (buildP * 100)}%)`;
+                bldRight.style.transform = `translateX(${100 - (buildP * 100)}%)`;
+            } else if (p >= 0.4) {
+                bldLeft.style.opacity = 0;
+                bldRight.style.opacity = 0;
+            } else {
+                bldLeft.style.opacity = 0;
+                bldRight.style.opacity = 0;
+            }
+
+            // --- 3. MACRO BROWN EYE FADE IN (Progress: 0.35 -> 0.5) ---
+            if (p >= 0.35) {
+                let eyeP = Math.min((p - 0.35) / 0.15, 1);
+                macroEye.style.opacity = eyeP;
+            } else {
+                macroEye.style.opacity = 0;
+            }
+
+            // --- 4. NEON REFLECTION (Progress: 0.5 -> 0.8) ---
+            if (p >= 0.5) {
+                let neonP = Math.min((p - 0.5) / 0.15, 1);
+                // Keep neon visible for the rest of the scroll
+                neon.style.opacity = neonP; 
+                // Slight 3D curve adjustment as we settle
+                neon.style.transform = `rotateX(${25 - (neonP * 15)}deg) scale(${0.8 + (neonP * 0.2)})`;
+            } else {
+                neon.style.opacity = 0;
+            }
+
+            // --- 5. ART DECO MARTINIS & SPLASH (Progress: 0.75 -> 1.0) ---
+            if (p >= 0.75) {
+                let stageP = Math.min((p - 0.75) / 0.1, 1);
+                martiniStage.style.opacity = stageP;
+
+                // Clink mechanics: Glasses slide towards center
+                let clinkP = Math.min(Math.max((p - 0.85) / 0.1, 0), 1);
                 
-                if (!ticking) {
-                    window.requestAnimationFrame(() => {
-                        renderTimeline(lastKnownScrollPosition);
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
+                // Left glass moves right and straightens
+                glassLeft.style.transform = `translateX(${clinkP * 40}px) rotate(${-15 + (clinkP * 15)}deg)`;
+                // Right glass moves left and straightens
+                glassRight.style.transform = `translateX(${-clinkP * 40}px) rotate(${15 - (clinkP * 15)}deg)`;
 
-            function renderTimeline(scrollTop) {
-                // Defensive Catch: Exit loop gracefully if a node fails to unpack
-                if (!hero || !eyeLayer || !leftFlank || !rightFlank) return;
-
-                // TRACK 1: Horizontal Squiggle Building Erection (Scroll 0 - 1300)
-                if (scrollTop <= 1300) {
-                    const f = Math.min(scrollTop / 900, 1);
-                    leftFlank.style.transform = `translateX(${-100 + (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
-                    rightFlank.style.transform = `translateX(${100 - (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
-                    
-                    if (scrollTop > 700) {
-                        const fade = 1 - ((scrollTop - 700) / 500);
-                        leftFlank.style.opacity = Math.max(fade, 0);
-                        rightFlank.style.opacity = Math.max(fade, 0);
-                    } else {
-                        leftFlank.style.opacity = 1;
-                        rightFlank.style.opacity = 1;
-                    }
+                // Splash mechanics: Explodes up right as they touch
+                if (clinkP > 0.9) {
+                    let splashP = (clinkP - 0.9) / 0.1;
+                    splash.style.opacity = Math.max(1 - splashP, 0); // Fades out slightly at end
+                    splash.style.transform = `scale(${splashP * 1.5}) translateY(${-splashP * 30}px)`;
+                } else {
+                    splash.style.opacity = 0;
+                    splash.style.transform = `scale(0.5) translateY(0)`;
                 }
 
-                // TRACK 2: Linear Smooth Camera Zoom (Scroll 0 - 2200)
-                if (scrollTop <= 2200) {
-                    const zoomScale = 1 + (scrollTop * 0.0035) + (scrollTop * scrollTop * 0.000015);
-                    const viewOpacity = scrollTop > 1500 ? 1 - ((scrollTop - 1500) / 600) : 1;
-                    
-                    hero.style.transform = `scale(${zoomScale})`;
-                    hero.style.opacity = Math.max(viewOpacity, 0);
-                    if (mainTitle) mainTitle.style.opacity = 1 - (scrollTop * 0.0015);
-                }
-
-                // TRACK 3: Seamless Crossfade Microscopic Pupil Core (Scroll 900 - 4200)
-                if (scrollTop >= 900 && scrollTop <= 4200) {
-                    const handoffTrack = (scrollTop - 900) / 700;
-                    const eyeOpacity = Math.min(Math.max(handoffTrack, 0), 1);
-                    const eyeScale = 0.1 + ((scrollTop - 900) * 0.00045);
-
-                    eyeLayer.style.opacity = eyeOpacity;
-                    eyeLayer.style.transform = `scale(${eyeScale})`;
-
-                    if (pupil) {
-                        const currentPupilWidth = 220 + ((scrollTop - 900) * 0.02);
-                        pupil.setAttribute('width', Math.min(currentPupilWidth, 310));
-                    }
-
-                    if (scrollTop > 3100) {
-                        const layerFade = 1 - ((scrollTop - 3100) / 700);
-                        eyeLayer.style.opacity = Math.max(layerFade, 0);
-                        if (textCanvas) textCanvas.style.opacity = layerFade;
-                    } else {
-                        if (textCanvas) textCanvas.style.opacity = 1;
-                    }
-                } else if (scrollTop < 900) {
-                    eyeLayer.style.opacity = 0;
-                }
-
-                // TRACK 4: Ambient Subtle Retro Sign Reflection Overlay
-                if (scrollTop >= 1300 && scrollTop <= 4000) {
-                    const neonOpacity = (scrollTop - 1300) / 600;
-                    if (neonLayer) {
-    
+            } else {
+                martiniStage.style.opacity = 0;
+                splash.style.opacity = 0;
+            }
+        }
+        
+        // Initial render
+        updateScene(window.scrollY);
+    </script>
+</body>
+</html>
