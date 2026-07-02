@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,10 +20,11 @@
             background: radial-gradient(circle, #ffffff 40%, #e2e2e2 100%);
             color: #000000;
             font-family: 'Space Grotesk', sans-serif;
-            min-height: 650vh; /* Expansive canvas to track all micro-milestones */
+            min-height: 600vh; /* Smooth, continuous scrolling track */
             overflow-x: hidden;
         }
 
+        /* Fixed viewport container holding our morphing elements */
         .scroller-container {
             position: fixed;
             top: 0;
@@ -35,10 +36,10 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            perspective: 2000px;
+            perspective: 1500px;
         }
 
-        /* --- SQUIGGLY BUILDING SIDEWAYS ERECTION --- */
+        /* --- STAGE 1: SQUIGGLY FLANK BUILDINGS --- */
         .skyline-flanks {
             position: absolute;
             width: 100%;
@@ -53,35 +54,34 @@
         }
 
         .flank-svg {
-            width: 35vw;
+            width: 32vw;
             height: 85vh;
             will-change: transform, opacity;
-            /* Applies continuous structural distortion to generate the "squiggle" look */
-            filter: url(#distort-squiggle); 
+            filter: url(#distort-squiggle); /* Generates the unstable raw squiggle look */
         }
 
         #left-flank {
-            transform: translateX(-100%) scaleX(0.2);
+            transform: translateX(-100%) scaleX(0.3);
             transform-origin: left bottom;
             fill: none;
-            stroke: #111;
+            stroke: #111111;
             stroke-width: 2;
         }
 
         #right-flank {
-            transform: translateX(100%) scaleX(0.2);
+            transform: translateX(100%) scaleX(0.3);
             transform-origin: right bottom;
             fill: none;
-            stroke: #111;
+            stroke: #111111;
             stroke-width: 2;
         }
 
-        /* --- STAGE 2: INITIAL GALLERY CANVAS --- */
+        /* --- STAGE 2: INITIAL GALLERY HERO WALL --- */
         .hero {
             display: flex;
             flex-direction: column;
             align-items: center;
-            transform-origin: 48.5% 42.5%; /* Absolute target coordinate centering the elk's pupil */
+            transform-origin: 48.5% 42.5%; /* Coordinates locked right to the center of the elk's pupil */
             z-index: 2;
             will-change: transform, opacity;
         }
@@ -118,10 +118,10 @@
             text-transform: uppercase;
             text-align: center;
             color: #000000;
-            transition: opacity 0.1s;
+            will-change: opacity;
         }
 
-        /* --- STAGE 3: HYPER-REALISTIC MICROSCOPIC EYE LAYER --- */
+        /* --- STAGE 3: HYPER-REALISTIC MICROSCOPIC DEER EYE --- */
         .macro-eye-container {
             position: absolute;
             top: 0;
@@ -132,16 +132,16 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.18);
+            transform: scale(0.1);
             z-index: 3;
             will-change: opacity, transform;
         }
 
         .macro-eye-svg {
-            width: 140vw;
-            height: 140vh;
-            max-width: 1600px;
-            max-height: 1600px;
+            width: 120vw;
+            height: 120vh;
+            max-width: 1500px;
+            max-height: 1500px;
         }
 
         /* --- STAGE 4: SUBTLE RETRO NEON SIGN EYE REFLECTION --- */
@@ -155,7 +155,7 @@
             z-index: 4;
             opacity: 0;
             pointer-events: none;
-            mix-blend-mode: screen; /* Fuses the light output directly into the eyeball fibers */
+            mix-blend-mode: screen; /* Seamlessly projects neon light rays across eyeball tissue */
             will-change: opacity, transform;
         }
 
@@ -165,38 +165,38 @@
             font-weight: 700;
             letter-spacing: 18px;
             text-align: center;
-            /* Atmospheric realistic retro glow: red baseline core with a deep sapphire blue perimeter gas ring */
-            color: rgba(255, 40, 40, 0.85);
+            /* Crimson neon gas core bounded by a high-voltage plasma blue aura */
+            color: rgba(255, 35, 35, 0.9);
             text-shadow: 
-                0 0 4px rgba(255, 30, 30, 0.9),
-                0 0 10px rgba(255, 30, 30, 0.6),
-                0 0 20px rgba(0, 80, 255, 0.8),
-                0 0 40px rgba(0, 80, 255, 0.6);
-            transform: scale(0.9) perspective(500px) rotateX(10deg); /* Slight curved contour projection */
+                0 0 4px rgba(255, 20, 20, 0.9),
+                0 0 12px rgba(255, 20, 20, 0.5),
+                0 0 22px rgba(0, 90, 255, 0.8),
+                0 0 44px rgba(0, 90, 255, 0.5);
+            transform: scale(0.85) perspective(600px) rotateX(12deg);
         }
 
-        /* The Isolated Glitching Target Letter */
-        .glitch-target {
+        /* The targeted glitching character "K" */
+        .glitch-k {
             display: inline-block;
-            animation: voltageDrop 3.5s infinite linear;
+            animation: voltageDrop 2.8s infinite linear;
         }
 
         @keyframes voltageDrop {
-            0%, 78%, 84%, 94%, 100% { 
-                color: rgba(255, 40, 40, 0.85);
-                text-shadow: 0 0 4px rgba(255, 30, 30, 0.9), 0 0 20px rgba(0, 80, 255, 0.8);
+            0%, 75%, 82%, 88%, 100% { 
+                color: rgba(255, 35, 35, 0.9);
+                text-shadow: 0 0 4px rgba(255, 20, 20, 0.9), 0 0 22px rgba(0, 90, 255, 0.8);
             }
-            79%, 83%, 91% { 
-                color: rgba(40, 10, 10, 0.2);
-                text-shadow: 0 0 1px rgba(0, 40, 150, 0.3);
+            76%, 81%, 85% { 
+                color: rgba(35, 8, 8, 0.25);
+                text-shadow: 0 0 1px rgba(0, 50, 160, 0.2);
             }
-            80% {
-                color: #fff;
-                text-shadow: 0 0 8px #00fffa, 0 0 15px #00fffa;
+            78% {
+                color: #ffffff;
+                text-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea;
             }
         }
 
-        /* --- STAGE 5: CLINK AREA WITH EMERALD STRIKE --- */
+        /* --- STAGE 5: EMERALD LIQUID MARTINI FINALE --- */
         .clink-universe {
             position: absolute;
             width: 100%;
@@ -207,7 +207,7 @@
             align-items: center;
             opacity: 0;
             z-index: 5;
-            transform: scale(0.85);
+            transform: scale(0.8);
             will-change: opacity, transform;
         }
 
@@ -218,23 +218,25 @@
             width: 500px;
             height: 260px;
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .glass {
-            width: 160px;
-            height: 220px;
+            width: 150px;
+            height: 210px;
             position: absolute;
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             transform-origin: bottom center;
         }
 
-        .glass-left { left: 80px; transform: rotate(-15deg); }
-        .glass-right { right: 80px; transform: rotate(14deg); }
+        .glass-left { left: 90px; transform: rotate(-14deg); }
+        .glass-right { right: 90px; transform: rotate(14deg); }
 
-        .martini-stage.clinked .glass-left { transform: translateX(60px) rotate(24deg); }
-        .martini-stage.clinked .glass-right { transform: translateX(-60px) rotate(-24deg); }
+        /* Snaps stems inward on target contact */
+        .martini-stage.clinked .glass-left { transform: translateX(55px) rotate(22deg); }
+        .martini-stage.clinked .glass-right { transform: translateX(-55px) rotate(-22deg); }
 
+        /* Dynamic Emerald Splash Physics Fluid paths */
         .emerald-splatter {
             position: absolute;
             top: 25px;
@@ -243,21 +245,21 @@
             pointer-events: none;
             opacity: 0;
             fill: #00ff66;
-            filter: drop-shadow(0 0 8px #00ff66);
+            filter: drop-shadow(0 0 10px #00ff66);
         }
 
         .martini-stage.clinked .emerald-splatter {
-            animation: liquidEruption 0.65s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
-            animation-delay: 0.1s;
+            animation: liquidEruption 0.7s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+            animation-delay: 0.08s;
         }
 
         @keyframes liquidEruption {
-            0% { opacity: 0; transform: scale(0.4) translateY(15px); }
-            30% { opacity: 1; }
-            100% { opacity: 0; transform: scale(1.25) translateY(-35px); filter: blur(2px); }
+            0% { opacity: 0; transform: scale(0.4) translateY(20px); }
+            35% { opacity: 1; }
+            100% { opacity: 0; transform: scale(1.3) translateY(-40px); filter: blur(2px); }
         }
 
-        /* --- SCROLL INFO MATRIX ELEMENTS --- */
+        /* --- DATA TEXT LAYERS --- */
         .info-container {
             position: absolute;
             width: 100%;
@@ -279,7 +281,7 @@
             opacity: 0;
             filter: blur(20px);
             transform: translateY(50px);
-            transition: all 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             color: #000000;
         }
 
@@ -292,7 +294,7 @@
             letter-spacing: 8px;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.85s cubic-bezier(0.16, 1, 0.3, 1);
             text-shadow: 0 0 8px rgba(255,255,255,0.4);
             margin-top: 30px;
         }
@@ -304,12 +306,12 @@
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
             <filter id="distort-squiggle">
-                <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
+                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
             </filter>
             <filter id="iris-flesh">
-                <feTurbulence type="turbulence" baseFrequency="0.08" numOctaves="5" result="grain" />
-                <feDisplacementMap in="SourceGraphic" in2="grain" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+                <feTurbulence type="turbulence" baseFrequency="0.07" numOctaves="4" result="grain" />
+                <feDisplacementMap in="SourceGraphic" in2="grain" scale="8" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
         </defs>
     </svg>
@@ -318,18 +320,18 @@
         
         <div class="skyline-flanks">
             <svg id="left-flank" class="flank-svg" viewBox="0 0 150 300">
-                <path d="M 10 300 L 10 120 L 45 120 L 45 300 Z" />
-                <path d="M 45 300 L 45 40 L 95 40 L 95 300 Z" />
-                <path d="M 95 300 L 95 160 L 140 160 L 140 300 Z" />
+                <path d="M 10 300 L 10 130 L 45 130 L 45 300 Z" />
+                <path d="M 45 300 L 45 50 L 95 50 L 95 300 Z" />
+                <path d="M 95 300 L 95 170 L 140 170 L 140 300 Z" />
                 <line x1="45" y1="90" x2="95" y2="90" />
-                <line x1="45" y1="150" x2="95" y2="150" />
+                <line x1="45" y1="140" x2="95" y2="140" />
             </svg>
             <svg id="right-flank" class="flank-svg" viewBox="0 0 150 300">
-                <path d="M 10 300 L 10 180 L 50 180 L 50 300 Z" />
-                <path d="M 50 300 L 50 20 L 105 20 L 105 300 Z" />
-                <path d="M 105 300 L 105 100 L 145 100 L 145 300 Z" />
-                <line x1="50" y1="70" x2="105" y2="70" />
-                <line x1="50" y1="130" x2="105" y2="130" />
+                <path d="M 10 300 L 10 190 L 50 190 L 50 300 Z" />
+                <path d="M 50 300 L 50 30 L 105 30 L 105 300 Z" />
+                <path d="M 105 300 L 105 110 L 145 110 L 145 300 Z" />
+                <line x1="50" y1="80" x2="105" y2="80" />
+                <line x1="50" y1="140" x2="105" y2="140" />
             </svg>
         </div>
         
@@ -344,42 +346,37 @@
             <svg class="macro-eye-svg" viewBox="0 0 400 400">
                 <defs>
                     <radialGradient id="hyper-iris" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#6e3f1b"/>
-                        <stop offset="30%" stop-color="#4d280f"/>
-                        <stop offset="65%" stop-color="#241205"/>
-                        <stop offset="90%" stop-color="#0a0501"/>
+                        <stop offset="0%" stop-color="#73421c"/>
+                        <stop offset="35%" stop-color="#4f2910"/>
+                        <stop offset="70%" stop-color="#261305"/>
+                        <stop offset="92%" stop-color="#080401"/>
                         <stop offset="100%" stop-color="#000000"/>
                     </radialGradient>
                 </defs>
-                
-                <circle cx="200" cy="200" r="190" fill="#090503" />
-                
+                <circle cx="200" cy="200" r="190" fill="#0b0604" />
                 <circle cx="200" cy="200" r="170" fill="url(#hyper-iris)" filter="url(#iris-flesh)" />
-                
-                <circle cx="200" cy="200" r="140" fill="none" stroke="#8a4f24" stroke-width="5" stroke-dasharray="2, 5" filter="url(#iris-flesh)" opacity="0.8"/>
-                <circle cx="200" cy="200" r="115" fill="none" stroke="#ba7542" stroke-width="2.5" stroke-dasharray="4, 2" opacity="0.7"/>
-                <circle cx="200" cy="200" r="95" fill="none" stroke="#1c0a01" stroke-width="12" stroke-dasharray="2, 10" filter="url(#iris-flesh)"/>
-                <circle cx="200" cy="200" r="80" fill="none" stroke="#945327" stroke-width="1" stroke-dasharray="1, 4" opacity="0.5"/>
+                <circle cx="200" cy="200" r="142" fill="none" stroke="#8c5126" stroke-width="5" stroke-dasharray="2, 6" filter="url(#iris-flesh)" opacity="0.8"/>
+                <circle cx="200" cy="200" r="118" fill="none" stroke="#bd7846" stroke-width="2.5" stroke-dasharray="4, 3" opacity="0.7"/>
+                <circle cx="200" cy="200" r="95" fill="none" stroke="#1f0c02" stroke-width="11" stroke-dasharray="3, 11" filter="url(#iris-flesh)"/>
                 
                 <rect x="90" y="184" width="220" height="32" rx="16" fill="#000000" id="pupil" />
                 
-                <path d="M70,120 Q200,50 330,120 Q200,85 70,120 Z" fill="rgba(255,255,255,0.18)" />
-                <circle cx="280" cy="250" r="16" fill="rgba(255,255,255,0.06)" />
-                <circle cx="110" cy="260" r="8" fill="rgba(255,255,255,0.04)" />
+                <path d="M70,120 Q200,50 330,120 Q200,85 70,120 Z" fill="rgba(255,255,255,0.16)" />
+                <circle cx="275" cy="245" r="14" fill="rgba(255,255,255,0.05)" />
             </svg>
         </div>
 
         <div class="neon-reflection-wrapper" id="neon-layer">
             <div class="neon-sign">
-                MK-ULT<span class="glitch-target">R</span>A
+                M<span class="glitch-k">K</span>-ULTRA
             </div>
         </div>
 
         <div class="info-container" id="text-canvas">
-            <div class="info-line" data-reveal="300">BYO</div>
-            <div class="info-line" data-reveal="700">MK-ULTRA opening night</div>
-            <div class="info-line" data-reveal="1100">July 4th</div>
-            <div class="info-line" data-reveal="1500">506 S Green Street</div>
+            <div class="info-line" data-reveal="200">BYO</div>
+            <div class="info-line" data-reveal="600">MK-ULTRA opening night</div>
+            <div class="info-line" data-reveal="1000">July 4th</div>
+            <div class="info-line" data-reveal="1400">506 S Green Street</div>
         </div>
 
         <div class="clink-universe" id="clink-zone">
@@ -387,21 +384,21 @@
                 <svg class="emerald-splatter" viewBox="0 0 100 100">
                     <circle cx="46" cy="48" r="3" />
                     <circle cx="54" cy="46" r="2.5" />
-                    <circle cx="50" cy="30" r="3.5" />
-                    <path d="M46,40 Q50,5 54,36 Z" />
-                    <path d="M51,43 Q55,8 58,38 Z" />
+                    <circle cx="50" cy="32" r="3.5" />
+                    <path d="M46,40 Q50,6 54,37 Z" />
+                    <path d="M51,42 Q55,9 58,39 Z" />
                 </svg>
 
                 <svg class="glass glass-left" viewBox="0 0 100 150">
                     <path d="M10,20 L90,20 L53,80 L53,140 L75,140 L75,146 L25,146 L25,140 L47,140 L47,80 Z" fill="none" stroke="#ffffff" stroke-width="3" />
                     <path d="M22,38 L78,38 L50,80 Z" fill="#00ff66" opacity="0.85" filter="drop-shadow(0 0 6px #00ff66)" />
-                    <line x1="50" y1="85" x2="50" y2="135" stroke="#fff" stroke-width="1" />
+                    <line x1="50" y1="85" x2="50" y2="135" stroke="#ffffff" stroke-width="1" />
                 </svg>
 
                 <svg class="glass glass-right" viewBox="0 0 100 150">
                     <path d="M10,20 L90,20 L53,80 L53,140 L75,140 L75,146 L25,146 L25,140 L47,140 L47,80 Z" fill="none" stroke="#ffffff" stroke-width="3" />
                     <path d="M22,38 L78,38 L50,80 Z" fill="#00ff66" opacity="0.85" filter="drop-shadow(0 0 6px #00ff66)" />
-                    <line x1="50" y1="85" x2="50" y2="135" stroke="#fff" stroke-width="1" />
+                    <line x1="50" y1="85" x2="50" y2="135" stroke="#ffffff" stroke-width="1" />
                 </svg>
             </div>
             <div class="info-line tagline" id="final-tag">The Night Is Still Young...</div>
@@ -423,78 +420,90 @@
         const infoLines = document.querySelectorAll('.info-line:not(.tagline)');
         const pupil = document.getElementById('pupil');
 
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.scrollY;
+        let lastKnownScrollPosition = 0;
+        let ticking = false;
 
-            // TRACK 1: Horizontal Squiggle Building Erection (0 - 1500)
-            if (scrollTop <= 1500) {
-                const growthFactor = Math.min(scrollTop / 1100, 1);
-                // Moves buildings inward horizontally out from the deep margins
-                leftFlank.style.transform = `translateX(${-100 + (growthFactor * 100)}%) scaleX(${0.2 + (growthFactor * 0.8)})`;
-                rightFlank.style.transform = `translateX(${100 - (growthFactor * 100)}%) scaleX(${0.2 + (growthFactor * 0.8)})`;
+        // Decouple calculations from direct execution to prevent scroll locking
+        window.addEventListener('scroll', () => {
+            lastKnownScrollPosition = window.scrollY || document.documentElement.scrollTop;
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    renderTimeline(lastKnownScrollPosition);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        function renderTimeline(scrollTop) {
+            // TRACK 1: Sideways Squiggle Erection (Scroll 0 - 1400)
+            if (scrollTop <= 1400) {
+                const f = Math.min(scrollTop / 1000, 1);
+                leftFlank.style.transform = `translateX(${-100 + (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
+                rightFlank.style.transform = `translateX(${100 - (f * 100)}%) scaleX(${0.3 + (f * 0.7)})`;
                 
-                if (scrollTop > 900) {
-                    leftFlank.style.opacity = 1 - ((scrollTop - 900) / 600);
-                    rightFlank.style.opacity = 1 - ((scrollTop - 900) / 600);
+                if (scrollTop > 800) {
+                    const fade = 1 - ((scrollTop - 800) / 600);
+                    leftFlank.style.opacity = Math.max(fade, 0);
+                    rightFlank.style.opacity = Math.max(fade, 0);
                 } else {
                     leftFlank.style.opacity = 1;
                     rightFlank.style.opacity = 1;
                 }
             }
 
-            // TRACK 2: Absolute Target Coordinate Precision Zoom (No intermediate fade out)
+            // TRACK 2: Linearized Smooth Camera Lens Zoom (No Infinite Breakers)
             if (scrollTop <= 2400) {
-                const zoomScale = 1 + (Math.pow(scrollTop, 2.65) * 0.0000025);
-                // Retain max visibility right up until the handoff limit to mask transition seams
-                const viewOpacity = scrollTop > 1700 ? 1 - ((scrollTop - 1700) / 700) : 1;
+                // Smooth linear-quadratic blending prevents value explosion
+                const zoomScale = 1 + (scrollTop * 0.0035) + (scrollTop * scrollTop * 0.000015);
+                const viewOpacity = scrollTop > 1600 ? 1 - ((scrollTop - 1600) / 600) : 1;
                 
                 hero.style.transform = `scale(${zoomScale})`;
                 hero.style.opacity = Math.max(viewOpacity, 0);
-                mainTitle.style.opacity = 1 - (scrollTop * 0.0016);
+                mainTitle.style.opacity = 1 - (scrollTop * 0.0015);
             }
 
-            // TRACK 3: Hyper-Realistic Microscopic Eye Layer Crossfade Placement
-            if (scrollTop >= 1200 && scrollTop <= 4600) {
-                // Calculation window designed to map the expansion scale to match the background photo perfectly
-                const handoffTrack = (scrollTop - 1200) / 800;
+            // TRACK 3: Seamless Crossfade Microscopic Pupil Core
+            if (scrollTop >= 1000 && scrollTop <= 4500) {
+                const handoffTrack = (scrollTop - 1000) / 800;
                 const eyeOpacity = Math.min(Math.max(handoffTrack, 0), 1);
-                const eyeScale = 0.18 + ((scrollTop - 1200) * 0.00038);
+                const eyeScale = 0.1 + ((scrollTop - 1000) * 0.00045);
 
                 eyeLayer.style.opacity = eyeOpacity;
                 eyeLayer.style.transform = `scale(${eyeScale})`;
 
-                // Pupil Dilation Velocity Matrix
-                const currentPupilWidth = 220 + ((scrollTop - 1200) * 0.015);
+                // Steady dilation tracking
+                const currentPupilWidth = 220 + ((scrollTop - 1000) * 0.02);
                 pupil.setAttribute('width', Math.min(currentPupilWidth, 310));
 
-                // Melt everything out smoothly into the final martini horizon
-                if (scrollTop > 3600) {
-                    const sceneFade = 1 - ((scrollTop - 3600) / 800);
-                    eyeLayer.style.opacity = Math.max(sceneFade, 0);
-                    textCanvas.style.opacity = sceneFade;
+                if (scrollTop > 3400) {
+                    const layerFade = 1 - ((scrollTop - 3400) / 700);
+                    eyeLayer.style.opacity = Math.max(layerFade, 0);
+                    textCanvas.style.opacity = layerFade;
                 } else {
                     textCanvas.style.opacity = 1;
                 }
-            } else if (scrollTop < 1200) {
+            } else if (scrollTop < 1000) {
                 eyeLayer.style.opacity = 0;
             }
 
-            // TRACK 4: Ambient Retro Neon Reflection Tracking
-            if (scrollTop >= 1600 && scrollTop <= 4400) {
-                const reflectionOpacity = (scrollTop - 1600) / 600;
-                neonLayer.style.opacity = Math.min(Math.max(reflectionOpacity, 0), 0.55); // Keeps it a subtle reflection
+            // TRACK 4: Ambient Subtle Retro Sign Reflection Overlay
+            if (scrollTop >= 1400 && scrollTop <= 4200) {
+                const neonOpacity = (scrollTop - 1400) / 600;
+                // Hardcap reflectivity at 0.5 to keep it a clean embedded tissue reflection
+                neonLayer.style.opacity = Math.min(Math.max(neonOpacity, 0), 0.5); 
                 
-                const reflectionScale = 0.75 + ((scrollTop - 1600) * 0.00012);
-                neonLayer.style.transform = `scale(${reflectionScale})`;
+                const neonScale = 0.75 + ((scrollTop - 1400) * 0.00015);
+                neonLayer.style.transform = `scale(${neonScale})`;
 
-                if (scrollTop > 3500) {
-                    neonLayer.style.opacity = 0.55 - ((scrollTop - 3500) / 800);
+                if (scrollTop > 3300) {
+                    neonLayer.style.opacity = 0.5 - ((scrollTop - 3300) / 700);
                 }
             } else {
                 neonLayer.style.opacity = 0;
             }
 
-            // TRACK 5: Sequential Info Text Stream Display
+            // TRACK 5: Sequential Info Text Deployment
             infoLines.forEach(line => {
                 const targetPoint = parseInt(line.getAttribute('data-reveal'));
-                
+                if (scrollTop > ta
